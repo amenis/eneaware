@@ -1,0 +1,4 @@
+<?php	
+	date_default_timezone_set("America/Mexico_City");
+	$conexion = mysqli_connect("localhost","root","", "eneaware") or die("Error: Conexion con servidor de bases de datos");
+?>

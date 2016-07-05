@@ -1,0 +1,537 @@
+<script src="js/jquery.js"></script>
+<script src="js/jquery-ui.js"></script>
+
+
+<?php
+session_start();
+	if(isset($_SESSION["Usuario_Eneaware"])){
+		if($_SESSION["Permisos_Eneaware"][10]!="000"){
+			include('conexion.php');
+			$accion = $_POST["accion"];	
+
+			if($accion=="reg"){
+				$Alumnos=mysqli_query($conexion,'INSERT INTO Alumnos() VALUES (null,"'.$_POST['matricula'].'","'.$_POST['curp'].'",
+				"'.$_POST['apP'].'","'.$_POST['apP'].'","'.$_POST['nombre'].'",
+				"'.$_POST['fechaN'].'","'.$_POST['tutor'].'","'.$_POST['domTu'].'","'.$_POST['inside'].'","'.$_POST['telCasa'].'","'.$_POST['telCel'].'","'.$_POST['email'].'","'.$_POST['dom'].'",
+				"'.$_POST['NumExt'].'","'.$_POST['NumInt'].'","'.$_POST['colonia'].'","'.$_POST['municipio'].'","'.$_POST['state'].'","'.$_POST['cp'].'",
+				"'.$_POST['calleF'].'","'.$_POST['NumExtF'].'","'.$_POST['NumIntF'].'","'.$_POST['coloniaF'].'","'.$_POST['municipioF'].'","'.$_POST['estadoF'].'","'.$_POST['cpF'].'",
+				"'.$_POST['padre'].'","'.$_POST['DomPa'].'","'.$_POST['madre'].'","'.$_POST['DomMa'].'","'.$_POST['emerg'].'","'.$_POST['domEme'].'",
+				"'.$_POST['telEme'].'","'.$_POST['tipSan'].'","'.$_POST['sexo'].'","'.$_POST['beca'].'","'.$_POST['nombreBeca'].'",1,"'.$_POST['semestre'].'","'.$_POST['carrera'].'",
+				"'.$_POST['notas'].'","'.$_POST['term'].'","'.$_POST['bachi'].'","'.$_POST['dict'].'")');
+				
+				if($Alumnos){
+					echo'REGISTRO CREADO';					
+					$id = mysqli_insert_id($conexion);
+					if(isset($_FILES["archivo"])){
+						$archivo= $_FILES['archivo'];
+						$tempName = $archivo["tmp_name"];		
+						$punto = "imagenes/alumnos/".$id."jpg";
+						copy($tempName,$punto);
+					}
+					mkdir("documentacion/alumnos/".$id, 0777);
+					echo '
+					<script>
+						$("[carga=alumnos]").trigger("click");
+					</script>';
+				}
+			}
+				
+			if($accion=="modificar"){
+				$ModAl=mysqli_query($conexion,'UPDATE Alumnos SET matricula="'.$_POST['matricula'].'",curp="'.$_POST['curp'].'",apellidoP="'.$_POST['apP'].'",apellidoM="'.$_POST['apM'].'",nombre="'.$_POST['nombre'].'",fecha_nacimiento="'.$_POST['fechaN'].'",
+				tutor="'.$_POST['tutor'].'",domicilio_tutor="'.$_POST['domTu'].'",fecha_ingreso="'.$_POST['inside'].'",tel_casa="'.$_POST['telCasa'].'",tel_celular="'.$_POST['telCel'].'",email="'.$_POST['email'].'",
+				calle_local="'.$_POST['dom'].'",num_ext_local="'.$_POST['NumExt'].'",num_int_local="'.$_POST['NumInt'].'",colonia_local="'.$_POST['colonia'].'",municipio_local="'.$_POST['municipio'].'",
+				estado_local="'.$_POST['state'].'",cp_local="'.$_POST['cp'].'",calle_foranea="'.$_POST['calleF'].'",num_ext_foranea="'.$_POST['NumExtF'].'",
+				num_int_foranea="'.$_POST['NumIntF'].'",colonia_foranea="'.$_POST['coloniaF'].'",municipio_foranea="'.$_POST['municipioF'].'",estado_foranea="'.$_POST['estadoF'].'",
+				cp_foranea="'.$_POST['cpF'].'",padre="'.$_POST['padre'].'",dom_padre="'.$_POST['DomPa'].'",madre="'.$_POST['madre'].'",dom_madre="'.$_POST['DomMa'].'",nombre_emergecia="'.$_POST['emerg'].'",
+				domicilio_emergencia="'.$_POST['domEme'].'",tel_emergencia="'.$_POST['telEme'].'",tipo_sangre="'.$_POST['tipSan'].'",sexo="'.$_POST['sexo'].'",beca="'.$_POST['beca'].'", nombreBeca="'.$_POST['nombreBeca'].'",
+				semestre="'.$_POST['semestre'].'",carrera="'.$_POST['carrera'].'",notas="'.$_POST['notas'].'",fecha_termino="'.$_POST['term'].'",bachillerato="'.$_POST['bachi'].'",dictamen_titulacion="'.$_POST['dict'].'"  WHERE id_alumno='.$_POST['id'].'');
+				echo 'Registro Modificado';				
+				
+				if(isset($_FILES["archivo"])){
+					$datosImg = explode(".", $_FILES["archivo"]["name"]);
+					$extension = $datosImg[count($datosImg)-1];
+					copy($_FILES["archivo"]["tmp_name"], "imagenes/alumnos/".$_POST['id'].".".$extension);				
+				}
+				
+				echo '<script>
+						$("[carga=alumnos]").trigger("click");
+						setTimeout(function(){$("[ mostrar=modificarA]").trigger("click") });
+					</script>';
+			}
+			if($accion=="borrar"){
+				$delete= mysqli_query($conexion,"Update Alumnos set status='0' WHERE id_alumno=".$_POST['alumno']);
+			echo"REGISTRO DESHABILITADO";
+			
+			echo '<script>
+						$("[carga=alumnos]").trigger("click");
+						settimeout(function(){$("[ mostrar=restaurarA ]").trigger("click") });
+					</script>';
+			}
+			if($accion=="restaurar"){
+				$delete= mysqli_query($conexion,"UPDATE Alumnos set status='1' WHERE id_alumno=".$_POST['id_alumno']);
+			echo"REGISTRO HABILITADO";
+			
+			echo '<script>
+						$("[carga=alumnos]").trigger("click");
+						settimeout(function(){$("[ mostrar=restaurarA ]").trigger("click") });
+					</script>';
+			}
+
+			if($accion=="reinscripcion"){
+				extract($_POST);
+				$reinscribir = mysqli_query($conexion,"UPDATE Alumnos SET semestre= semestre + 1 WHERE id_alumno=".$id." ");
+				if($reinscribir){
+					$pagos= mysqli_query($conexion,"INSERT INTO Pagos() VALUES(null,'".$auth."','".$id."','".$note."','".$amount."',1)");
+					
+					if($pagos){
+
+						$id_pago= mysqli_insert_id($conexion);
+						
+						if(isset($_FILES['ficha'])){
+							$datosImg = explode(".",$_FILES['ficha']['name']);
+							$extension= $datosImg[count($datosImg)-1];
+							copy($_FILES['ficha']['tmp_name'],"documentacion/alumnos/".$id."/ficha".$id_pago.".".$extension);
+						}
+
+						echo'
+						LA REINSCRIPCION HA SIDO EXITOSA
+						<script>
+							$("[carga=alumnos]").trigger("click");
+							setTimeout(function(){$("[ mostrar=reinscripcion]").trigger("click") });
+						</script>';
+					}
+					else{
+						echo mysqli_error($conexion);
+					}
+					
+					
+				}
+				else{
+					echo  mysqli_error($conexion);
+				}
+			}
+
+			if($accion=="modReins"){
+				extract($_POST);
+                $modPago = mysqli_query($conexion,"UPDATE Pagos SET num_autorizacion='".$numAut."',notas='".$notas."',importe='".$importe."' WHERE id_pago=".$id_pago." ");
+                if($modPago){
+                    if(isset($_FILES['ficha'])){
+                        $datosImg = explode(".",$_FILES['ficha']['name']);
+                        $extension= $datosImg[count($datosImg)-1];
+                        copy($_FILES['ficha']['tmp_name'],"documentacion/alumnos/".$id_al."/ficha".$id_pago.".".$extension);
+                    }
+
+                    echo'
+                    MODIFICACION EXITOSA
+                    <script>
+                        $("[carga=alumnos]").trigger("click");
+                        setTimeout(function(){$("[ mostrar=verPagos]").trigger("click") });
+                    </script>';
+                }
+                else{
+                    echo mysqli_error($conexion);
+                }
+			}
+
+			if($accion=="registroAl"){
+				extract($_POST);
+				$alumno = mysqli_query($conexion,"SELECT CONCAT(apellidoP,' ',apellidoM,' ',nombre ) AS nombre, id_alumno,semestre,matricula,email FROM Alumnos WHERE matricula='".$matricula."' ");
+				$datosAl= mysqli_fetch_assoc($alumno);
+				
+				if($datosAl!=0){
+					
+					echo'
+					<table>
+						<tr>
+							<td>Nombre </td><td><input type="text" size="50" value="'.$datosAl['nombre'].'" disabled/></td>
+						</tr>
+						<tr>
+							<td>Semestre Actual </td><td><input type="number" value="'.$datosAl['semestre'].'" disabled/></td>
+						</tr>
+						<tr>
+							<td>Matricula</td><td><input type="text" value="'.$datosAl['matricula'].'" disabled/></td>
+						</tr>
+						<tr>
+							<td>Correo</td><td><input type="email" value="'.$datosAl['email'].'" disabled></td>
+						</tr>
+					</table>';
+
+					if(file_exists("imagenes/alumnos/".$datosAl["id_alumno"].".png")){
+								$imagenTmp1=$datosAl["id_alumno"].'.png';
+					}
+					else{
+						if(file_exists("imagenes/alumnos/".$datosAl["id_alumno"].".jpg")){
+							$imagenTmp1=$datosAl["id_alumno"].'.jpg';
+						}
+						else{
+							if(file_exists("imagenes/alumnos/".$datosAl["id_alumno"].".gif")){
+								$imagenTmp1=$datosAl["id_alumno"].'.gif';
+							}
+							else {
+								if(file_exists("imagenes/alumnos/".$datosAl["id_alumno"].".svg")){
+									$imagenTmp1=$datosAl["id_alumno"].'.svg';
+								}
+								else {
+									$imagenTmp1="disable.gif";
+								}
+							}
+						}
+					}	
+
+					echo'
+					<img src="imagenes/alumnos/'.$imagenTmp1.'" style="position:absolute;top:5px;left:53%;width:35%;border:2px solid grey;border-radius:5px;"/><br/>
+					<form action="accionesAlumno.php" destino="resultadoRegistro">					
+						<fieldset style="width:15%;">
+							<legend><h4>Registro del Pago</h4></legend>
+							
+								<input type="hidden" name="accion" value="reinscripcion"/>
+								<input type="hidden" name="id" value="'.$datosAl['id_alumno'].'"/>
+								<table>
+									<tr><td>No Autentificacion</td><td><input type="text" name="auth"/></td></tr>
+									<tr><td>Monto</td><td><input type="number" step="any" min="0" name="amount"/></td></tr>
+									<tr><td>Notas</td><td><textArea rows="5" cols="25" name="note"></textArea></td></tr>
+									<tr><td>Ficha</td><td><input type="file" nombre="ficha" accept=".jpg,.png,.gif"></td></tr>
+								</table>
+						</fieldset>
+						<center><button>Guardar/Reinscribir</button></center>
+					</form>';
+				}
+				else{
+					echo'
+					<script>
+						$("[carga=alumnos]").trigger("click");
+						setTimeout(function(){$("[mostrar=reinscripcion]").trigger("click")},1000);
+						setTimeout(function(){$("#resultadoRegistro").html("Matricula Invalida").show()},1000);
+						$("#resultadoRegistro").html("Matricula Invalida").hide();
+					</script>';
+				}
+				mysqli_free_result($alumno);
+			}
+
+			if($accion=="guardarDoc"){
+				extract($_POST);
+				if(isset($_FILES['doc'])){
+					$datosDoc = explode(".", $_FILES['doc']['name']);
+					$ext = $datosDoc[count($datosDoc)-1];
+					copy($_FILES['doc']['tmp_name'],"documentacion/alumnos/".$id."/".$nombre.".".$ext);
+
+					echo 'Archivo Registrado
+					<script>
+						$("[carga=alumnos]").trigger("click");
+						setTimeout(function(){$("[mostrar=documentosAl]").trigger("click")},1000);
+					</script>
+					';
+
+				}
+				else{
+					echo 'No se detecto ningun documento '.$id;
+				}
+			}
+			if($accion=="semestre"){
+				$al = mysqli_query($conexion,"SELECT * FROM Alumnos WHERE semestre='".$_POST['semestre']."' AND status=1 ");
+
+				echo'
+				
+				<div id="dialog-message" title="Reporte " >
+							<form id="report" action="accionesAlumno.php"  method="POST" target="_self" >
+								<input type="hidden" name="nombre" value="Reporte por semestre">
+								<input type="hidden" name="accion" value="reporte">
+								<input type="hidden" name="table" id="reporte">
+							
+							</form>
+						<table style="padding-top:20px;top:30%;left:15%;background:#F2F2F2;border-radius:5px" border="1" border="1" cellpadding="10" cellspacing="0" bordercolor="#666666" id="tablaReporte">
+							<tr bgcolor="#0404B4"><td style="border:none;" colspan="25"><center>REGISTRO DE ALUMNOS POR SEMESTRE</center></td></tr>
+							<tr><td  style="border:none">Fecha de expedicion</td><td style="border:none">'.date('Y-m-d').'</td></tr>
+							<tr></tr>
+							<tr bgcolor="gray">
+								<td>NOMBRE</td>
+								<td>MATRICULA</td>
+								<td>CURP</td>
+								<td>SEMESTRE</td>
+								<td>CORREO</td>
+								<td>CARRERA</td>
+								<td>Fecha de Nacimiento</td>
+								<td>Telefono de Casa</td>
+								<td>Telefono Celular</td>
+								<td>Email </td>
+								<td>Domicilio</td>
+								<td>Numero Exterior</td>
+								<td>Numero Interior</td>
+								<td>Colonia</td>
+								<td>Municipio</td>
+								<td>Codigo Postal</td>
+								<td>Estado</td>
+								<td>Nombre del Padre</td>
+								<td>En caso de emergencia llamar a </td>
+								<td>Domicilio de Emergencia</td>
+								<td>Telefono de Emergencia</td>
+								<td>Tipo de Sangre</td>
+								<td>Bachillerato </td>
+								<td>Fecha de Ingreso</td>
+
+							</tr>';
+							while($datosAl = mysqli_fetch_assoc($al)){
+								echo'
+								<tr>
+									<td bgcolor="pink">'.$datosAl['apellidoP'].' '.$datosAl['apellidoM'].' '.$datosAl['nombre'].'</td>
+									<td>'.$datosAl['matricula'].'</td>
+									<td>'.$datosAl['curp'].'</td>
+									<td>'.$datosAl['semestre'].'</td>
+									<td>'.$datosAl['email'].'</td>
+									<td>'.$datosAl['carrera'].'</td>
+									<td>'.$datosAl["fecha_nacimiento"].'</td>
+									<td>'.$datosAl["tel_casa"].'</td>
+									<td>'.$datosAl["tel_celular"].'</td>
+									<td>'.$datosAl["calle_local"].'</td>
+									<td>'.$datosAl["num_ext_local"].'</td>
+									<td>'.$datosAl["num_int_local"].'</td>
+									<td>'.$datosAl["colonia_local"].'</td>
+									<td>'.$datosAl["municipio_local"].'</td>
+									<td>'.$datosAl["cp_local"].'</td>
+									<td>'.$datosAl['estado_local'].'</td>
+									<td>'.$datosAl["padre"].'</td>
+									<td>'.$datosAl["madre"].'</td>
+									<td>'.$datosAl["nombre_emergecia"].'</td>
+									<td>'.$datosAl["domicilio_emergencia"].'</td>
+									<td>'.$datosAl["tel_emergencia"].'</td>
+									<td>'.$datosAl["tipo_sangre"].'</td>
+									<td>'.$datosAl["bachillerato"].'</td>
+									<td>'.$datosAl["fecha_ingreso"].'</td>
+								</tr>
+								';
+							}
+					echo'
+							
+						</table>
+					
+				<script>
+						$(function() {
+						    $( "#dialog-message" ).dialog({
+							    modal: true,
+							    width:"90%",
+							    height:600,
+							    buttons:{
+							    	"Exportar a Excel" :function(){
+							    		 $(\'#reporte\').val($(\'<div>\').html( $(\'#tablaReporte\').eq(0).clone()).html());$(\'#report\').submit();
+							    	}
+							    }
+							    
+							});
+						});
+					</script>';
+
+			}
+			if($accion=="carrera"){
+				$al = mysqli_query($conexion,"SELECT * FROM Alumnos WHERE carrera='".$_POST['carrera']."' AND status=1 ");
+
+				echo'
+				
+  
+				<div id="dialog-message" title="Reporte " >
+							<form  id="report" action="accionesAlumno.php"  method="POST" target="_self">
+								<input type="hidden" name="nombre" value="Reporte por carrera">
+								<input type="hidden" name="table" id="reporte">
+								<input type="hidden" name="accion" value="reporte">
+																
+							</form>
+
+						<table style="padding-top:20px;top:30%;left:15%;background:#F2F2F2;border-radius:5px" border="1" border="1" cellpadding="10" cellspacing="0" bordercolor="#666666" id="tablaReporte">
+							<tr bgcolor="#0404B4"><td style="border:none;" colspan="6"><center>REGISTRO DE ALUMNOS POR CARRERA</center></td></tr>
+							<tr><td  style="border:none">Fecha de expedicion</td><td style="border:none">'.date('Y-m-d').'</td></tr>
+							<tr></tr>
+							<tr bgcolor="gray">
+								<td>NOMBRE</td>
+								<td>MATRICULA</td>
+								<td>CURP</td>
+								<td>SEMESTRE</td>
+								<td>CORREO</td>
+								<td>CARRERA</td>
+								<td>Fecha de Nacimiento</td>
+								<td>Telefono de Casa</td>
+								<td>Telefono Celular</td>
+								<td>Email </td>
+								<td>Domicilio</td>
+								<td>Numero Exterior</td>
+								<td>Numero Interior</td>
+								<td>Colonia</td>
+								<td>Municipio</td>
+								<td>Codigo Postal</td>
+								<td>Estado</td>
+								<td>Nombre del Padre</td>
+								<td>En caso de emergencia llamar a </td>
+								<td>Domicilio de Emergencia</td>
+								<td>Telefono de Emergencia</td>
+								<td>Tipo de Sangre</td>
+								<td>Bachillerato </td>
+								<td>Fecha de Ingreso</td>
+
+							</tr>';
+							while($datosAl = mysqli_fetch_assoc($al)){
+								echo'
+								<tr>
+									<td bgcolor="pink">'.$datosAl['apellidoP'].' '.$datosAl['apellidoM'].' '.$datosAl['nombre'].'</td>
+									<td>'.$datosAl['matricula'].'</td>
+									<td>'.$datosAl['curp'].'</td>
+									<td>'.$datosAl['semestre'].'</td>
+									<td>'.$datosAl['email'].'</td>
+									<td>'.$datosAl['carrera'].'</td>
+									<td>'.$datosAl["fecha_nacimiento"].'</td>
+									<td>'.$datosAl["tel_casa"].'</td>
+									<td>'.$datosAl["tel_celular"].'</td>
+									<td>'.$datosAl["calle_local"].'</td>
+									<td>'.$datosAl["num_ext_local"].'</td>
+									<td>'.$datosAl["num_int_local"].'</td>
+									<td>'.$datosAl["colonia_local"].'</td>
+									<td>'.$datosAl["municipio_local"].'</td>
+									<td>'.$datosAl["cp_local"].'</td>
+									<td>'.$datosAl['estado_local'].'</td>
+									<td>'.$datosAl["padre"].'</td>
+									<td>'.$datosAl["madre"].'</td>
+									<td>'.$datosAl["nombre_emergecia"].'</td>
+									<td>'.$datosAl["domicilio_emergencia"].'</td>
+									<td>'.$datosAl["tel_emergencia"].'</td>
+									<td>'.$datosAl["tipo_sangre"].'</td>
+									<td>'.$datosAl["bachillerato"].'</td>
+									<td>'.$datosAl["fecha_ingreso"].'</td>
+								</tr>
+								';
+							}
+					echo'
+						
+						</table>
+										
+				</div>
+					<script>
+						$(function() {
+						    $( "#dialog-message" ).dialog({
+							    modal: true,
+							    width:"90%",
+							   height:600,
+							    buttons:{
+							    	"Expotar a Excel":function(){
+							    		 $(\'#reporte\').val($(\'<div>\').html( $(\'#tablaReporte\').eq(0).clone()).html());$(\'#report\').submit();
+							    	}
+							    }
+							    
+							});
+						});
+					</script>';
+
+			}
+			if($accion=="status"){
+				$al = mysqli_query($conexion,"SELECT * FROM Alumnos WHERE status='".$_POST['status']."' AND status=1 ");
+
+				echo'			
+				<div id="dialog-message" title="Reporte " >
+							<form id="report" action="accionesAlumno.php"  method="POST" target="_self" >
+								<input type="hidden" name="nombre" value="Reporte por status">
+								<input type="hidden" name="table" id="reporte">
+								
+							</form>
+						<table style="padding-top:20px;top:30%;left:10%;background:#F2F2F2;border-radius:5px" border="1" border="1" cellpadding="10" cellspacing="0" bordercolor="#666666" id="tablaReporteNivel">
+							<tr bgcolor="#0404B4"><td style="border:none;" colspan="7"><center>REGISTRO DE ALUMNOS POR STATUS</center></td></tr>
+							<tr><td  style="border:none">Fecha de expedicion</td><td style="border:none">'.date('Y-m-d').'</td></tr>
+							<tr></tr>
+							<tr bgcolor="gray">
+								<td>NOMBRE</td>
+								<td>MATRICULA</td>
+								<td>CURP</td>
+								<td>SEMESTRE</td>
+								<td>CORREO</td>
+								<td>CARRERA</td>
+								<td>Fecha de Nacimiento</td>
+								<td>Telefono de Casa</td>
+								<td>Telefono Celular</td>
+								<td>Email </td>
+								<td>Domicilio</td>
+								<td>Numero Exterior</td>
+								<td>Numero Interior</td>
+								<td>Colonia</td>
+								<td>Municipio</td>
+								<td>Codigo Postal</td>
+								<td>Estado</td>
+								<td>Nombre del Padre</td>
+								<td>En caso de emergencia llamar a </td>
+								<td>Domicilio de Emergencia</td>
+								<td>Telefono de Emergencia</td>
+								<td>Tipo de Sangre</td>
+								<td>Bachillerato </td>
+								<td>Fecha de Ingreso</td>
+
+							</tr>';
+							while($datosAl = mysqli_fetch_assoc($al)){
+								echo'
+									<tr>
+									<td bgcolor="pink">'.$datosAl['apellidoP'].' '.$datosAl['apellidoM'].' '.$datosAl['nombre'].'</td>
+									<td>'.$datosAl['matricula'].'</td>
+									<td>'.$datosAl['curp'].'</td>
+									<td>'.$datosAl['semestre'].'</td>
+									<td>'.$datosAl['email'].'</td>
+									<td>'.$datosAl['carrera'].'</td>
+									<td>'.$datosAl["fecha_nacimiento"].'</td>
+									<td>'.$datosAl["tel_casa"].'</td>
+									<td>'.$datosAl["tel_celular"].'</td>
+									<td>'.$datosAl["calle_local"].'</td>
+									<td>'.$datosAl["num_ext_local"].'</td>
+									<td>'.$datosAl["num_int_local"].'</td>
+									<td>'.$datosAl["colonia_local"].'</td>
+									<td>'.$datosAl["municipio_local"].'</td>
+									<td>'.$datosAl["cp_local"].'</td>
+									<td>'.$datosAl['estado_local'].'</td>
+									<td>'.$datosAl["padre"].'</td>
+									<td>'.$datosAl["madre"].'</td>
+									<td>'.$datosAl["nombre_emergecia"].'</td>
+									<td>'.$datosAl["domicilio_emergencia"].'</td>
+									<td>'.$datosAl["tel_emergencia"].'</td>
+									<td>'.$datosAl["tipo_sangre"].'</td>
+									<td>'.$datosAl["bachillerato"].'</td>
+									<td>'.$datosAl["fecha_ingreso"].'</td>
+								</tr>
+								';
+							}
+					echo'
+
+							
+						</table>
+					
+				</div>
+					<script>
+						$(function() {
+						    $( "#dialog-message" ).dialog({
+							    modal: true,
+							    width:"90%",
+							   height:600,
+							    buttons:{
+							    	exportar:function(){
+							    		 $(\'#reporte\').val($(\'<div>\').html( $(\'#tablaReporte\').eq(0).clone()).html());$(\'#report\').submit();
+							    	}
+							    }
+							    
+							});
+						});
+					</script>';
+			}
+			if($accion=="reporte"){
+				try{
+					
+					header("Pragma: public");
+					header("Content-Disposition: filename=".$_POST['nombre'].".xls");
+					header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');					
+					header("Pragma: no-cache");
+					header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+					header("Cache-Control: public");
+					header("Expires: 0");
+					header("Content-Type: application/force-download");
+					echo $_POST['table'];
+
+				}
+				catch(Exception $e){
+				    echo $e->getMessage();
+
+				}		
+					
+			}
+		}
+	}	
+?>
+

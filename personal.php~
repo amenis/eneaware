@@ -1,0 +1,777 @@
+<?php
+	session_start();
+	include("conexion.php");
+	echo '
+	<div style="overflow:auto;height:100%">
+		<h1>Administración del personal ENEA</h1>
+		<button class="tab seleccionado"  style="border-bottom:none;" permiso="A" mostrar="registrarPer">Registrar personal</button>
+		<button class="tab" style="border-bottom:none;" mostrar="modificarPer">Ver / Modificar informacion del personal</button>
+		<button class="tab" style="border-bottom:none;" mostrar="documentosPer">Documentos digitales</button>
+		<button class="tab" style="border-bottom:none;" mostrar="restaurarPer">Restaurar personal</button>
+		<div style="background:rgba(255,255,255,0.65);border:1px solid rgba(0,0,0,0.2);padding-left:20px;">
+			<div id="registrarPer" class="tabCont" permiso="A">
+				<h2>Registrar personal</h2>
+				<form destino="resultadoRegistro" action="accionesPersonal.php">
+					<img style="cursor:pointer;position:fixed;top:150px;right:5%;border-radius:4px;border:2px solid grey;width:15%" src="imagenes/user.gif" onclick="$(this).next().next().trigger(\'click\')">
+					<br>
+					<input type="file" style="display:none" nombre="foto" accept=".jpg, .gif, .png">
+					<input type="hidden" name="accion" value="registrar">
+					<table>
+						<tr><td>Nombre completo: <br><small>con apellidos </small> </td><td><input type="text" placeholder="Ejemplo: Thomas Ritchie" name="nombre" size="50" required title="Este campo debe completarse" autofocus></td><td></td></tr>
+						<tr><td>Nombramiento: <br><small>puesto de trabajo </small> </td><td><input type="text" placeholder="Ejemplo: Subdirector" name="nombramiento" size="50"></td><td></td></tr>
+						<tr><td>Turno</td><td>
+							<select name="turno" required title="Selecciona el turno">
+								<option value="">Selecciona</option>
+								<option value="matutino">Matutino</option>
+								<option value="vespertino">Vespertino</option>
+								<option value="nocturno">Nocturno</option>
+							</select>
+						</td></tr>
+						<tr><td>Sexo: </td><td><input type="radio" value="H" name="sexo" id="sexRPh" checked><label for="sexRPh">Hombre</label><br><input type="radio" value="M" name="sexo" id="sexRPm"><label for="sexRPm">Mujer</label></td><td></td></tr>
+						<tr><td>Estado civil</td>
+							<td>
+								<select name="estadoC" required title="Selecciona el estado civil">
+									<option value="">Selecciona</option>
+									<option value="soltero">Soltero / Soltera</option>
+									<option value="casado">Casado / Casada</option>
+									<option value="divorciado">Divorciado / Divorciada</option>
+									<option value="viudo">Viudo / Viuda</option>
+								</select>
+							</td><td></td>
+						</tr>
+						<tr><td>RFC: </td><td><input type="text" placeholder="Ejemplo: VECJ880326 XXX" name="rfc" size="25"></td><td></td></tr>
+						<tr><td>Curp: </td><td><input type="text" placeholder="Ejemplo: CXGA91116HDFSRL08" name="curp" size="28"></td><td></td></tr>
+						<tr><td>Localidad: </td><td><input type="text" placeholder="Ejemplo: Centro" name="localidad" size="30"></td><td></td></tr>
+						<tr><td>Municipio: </td><td><input type="text" placeholder="Ejemplo: Arandas" name="municipio" size="30"></td><td></td></tr>
+						<tr><td>Domicilio: </td><td><input type="text" placeholder="Ejemplo: Arboleras 256" name="domicilio" size="30"></td><td></td></tr>
+						<tr><td>Telefono: </td><td><input type="text" placeholder="Ejemplo: 3481055555" name="tel" size="25"></td><td></td></tr>
+						<tr><td>Email: </td><td><input type="email" placeholder="Ejemplo: ThomasR@hotmail.com" name="email" size="30" title="Debe ser un email real"></td><td></td></tr>
+						<tr><td>Fecha de nacimiento: </td><td><input type="date" name="fechaN"></td><td></td></tr>
+						<tr><td>Fecha de ingreso:<br><small>Ingreso a la ENEA </small></td><td><input type="date" name="fechaIE"></td><td></td></tr>
+						<tr><td>Fecha de ingreso:<br><small>Ingreso a la SEP </small></td><td><input type="date" name="fechaIS"></td><td></td></tr>
+						<tr><td>Nivel de estudios</td>
+							<td>
+								<select name="grado" required title="Selecciona el grado de estudios">
+									<option value="">Selecciona</option>
+									<option value="preescolar">Preescolar</option>
+									<option value="primaria">Primaria</option>
+									<option value="secundaria">Secundaria</option>
+									<option value="preparatoria">Preparatoria</option>
+									<option value="licenciatura">Licenciatura</option>
+									<option value="maestria">Maestria</option>
+									<option value="doctorado">Doctorado</option>
+								</select>
+							</td><td></td>
+						</tr>
+						<tr><td>Escuela: </td><td><input type="text" placeholder="Ejemplo: ENEA" name="escuela" size="40"></td><td></td></tr>
+						<tr><td>Acta de examen: </td><td><input type="text" placeholder="Ejemplo: MAESTRIA 02 0121" name="actaEx" size="40"></td><td></td></tr>
+						<tr><td>Fecha de titulación: </td><td><input type="date" name="fechaTi"></td><td></td></tr>
+						<tr><td>Tema de titulacion: </td><td><input type="text" placeholder="Ejemplo: Programación cognitiva" name="temaTi" size="45"></td><td></td></tr>
+						<tr><td>¿Actualmente estudia? </td>
+							<td>
+								<input onclick="$(\'#filaBeca\').children().hide()" type="radio" value="0" name="estudio" id="estudioRP1" checked><label for="estudioRP1">No estudia</label><br>
+								<input onclick="$(\'#filaBeca\').children().show()"type="radio" value="1" name="estudio" id="estudioRP2"><label for="estudioRP2">Si estudia</label>
+						</td><td></td></tr>
+						<tr id="filaBeca"><td style="display: none">¿Cuenta con beca? </td><td style="display: none"><input type="radio" value="1" name="beca" id="becaRP1" checked><label for="becaRP1">Si tiene beca</label><br><input type="radio" value="0" name="beca" id="becaRP2"><label for="becaRP2">No tiene beca</label></td><td></td></tr>
+						<tr><td>¿Tiene otro trabajo?</td><td><input type="radio" value="0" name="otroJob" id="otroJRP1" checked><label for="otroJRP1">No tiene otro trabajo</label><br><input type="radio" value="1" name="otroJob" id="otroJRP2"><label for="otroJRP2">Si tiene otro trabajo</label></td><td></td></tr>
+						<tr><td>¿Actualmente labora en la ENEA?</td><td><input type="radio" value="1" name="actual" id="actualRP1" checked><label for="actualRP1">Si labora actualmente</label><br><input type="radio" value="0" name="actual" id="actualRP2"><label for="actualRP2">No labora actualmente</label></td><td></td></tr>
+						<tr><td>Acceso al sistema</td><td><input type="checkbox" name="acceso" id="accesoRP" onclick="if($(this).is(\':checked\')){$(this).next().text(\'(Si tendra acceso)\');$(\'.accesoInv\').show()}else{$(this).next().text(\'(No tendra acceso)\');$(\'.accesoInv\').hide()}"><label for="accesoRP">(No tendra acceso)</label></td><td></td></tr>
+						<tr class="accesoInv"><td>Usuario: </td><td><input type="text" placeholder="Ejemplo: usuario2014" name="usuario" size="25"></td><td></td></tr>
+						<tr class="accesoInv"><td>Contraseña: </td><td><input type="password" placeholder="Ejemplo: contraseña dificil" name="pass" size="25"></td><td></td></tr>
+						<tr class="accesoInv"><td>Repetir contraseña: </td><td><input type="password" placeholder="Escribe la misma contraseña" name="pass2" size="25"></td><td></td></tr>
+						<tr class="accesoInv"><td>Tipo de usuario</td><td>
+							<select name="tipoUsuario" title="Selecciona un tipo de usuario predeterminado">
+								<option value="">Selecciona</option>
+								<option value="minimo">Permisos minimos</option>
+								<option value="medios">Medios</option>
+								<option value="maximos">Maximos</option>
+							</select>
+						</td><td></td></tr>
+						<tr class="accesoInv"><td>Permisos: </td><td>Selecciona los permisos para el usuario en el sistema<br><br></td><td></td></tr>
+						<tr class="accesoInv">
+							<td style="vertical-align:text-top;border-top:1px solid grey">Recusros humanos </td>
+							<td>
+								<div class="tablaPermisos">
+									<b>Personal</b><hr></hr>
+									<input type="checkbox" value="1" name="pos1">Agregar
+									<input type="checkbox" value="1" name="pos2">Modificar
+									<input type="checkbox" value="1" name="pos3">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Claves</b><hr></hr>
+									<input type="checkbox" value="1" name="pos5">Agregar
+									<input type="checkbox" value="1" name="pos6">Modificar
+									<input type="checkbox" value="1" name="pos7">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Comisiones</b><hr></hr>
+									<input type="checkbox" value="1" name="pos9">Agregar
+									<input type="checkbox" value="1" name="pos10">Modificar
+									<input type="checkbox" value="1" name="pos11">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Viaticos</b><hr></hr>
+									<input type="checkbox" value="1" name="pos13">Agregar
+									<input type="checkbox" value="1" name="pos14">Modificar
+									<input type="checkbox" value="1" name="pos15">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Estimulos</b><hr></hr>
+									<input type="checkbox" value="1" name="pos17">Agregar
+									<input type="checkbox" value="1" name="pos18">Modificar
+									<input type="checkbox" value="1" name="pos19">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Horarios</b><hr></hr>
+									<input type="checkbox" value="1" name="pos21">Agregar
+									<input type="checkbox" value="1" name="pos22">Modificar
+									<input type="checkbox" value="1" name="pos23">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Insidencias</b><hr></hr>
+									<input type="checkbox" value="1" name="pos25">Agregar
+									<input type="checkbox" value="1" name="pos26">Modificar
+									<input type="checkbox" value="1" name="pos27">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Licencias</b><hr></hr>
+									<input type="checkbox" value="1" name="pos29">Agregar
+									<input type="checkbox" value="1" name="pos30">Modificar
+									<input type="checkbox" value="1" name="pos31">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Propuestas</b><hr></hr>
+									<input type="checkbox" value="1" name="pos33">Agregar
+									<input type="checkbox" value="1" name="pos34">Modificar
+									<input type="checkbox" value="1" name="pos35">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Prestadores de servicios</b><hr></hr>
+									<input type="checkbox" value="1" name="pos37">Agregar
+									<input type="checkbox" value="1" name="pos38">Modificar
+									<input type="checkbox" value="1" name="pos39">Deshabilitar
+								</div>
+							</td>
+						</tr>
+						<tr class="accesoInv">
+							<td style="vertical-align:text-top;border-top:1px solid grey">Control escolar </td>
+							<td>
+								<div class="tablaPermisos">
+									<b>Alumnos</b><hr></hr>
+									<input type="checkbox" value="1" name="pos41">Agregar
+									<input type="checkbox" value="1" name="pos42">Modificar
+									<input type="checkbox" value="1" name="pos43">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Lugares para practicas profesionales</b><hr></hr>
+									<input type="checkbox" value="1" name="pos45">Agregar
+									<input type="checkbox" value="1" name="pos46">Modificar
+									<input type="checkbox" value="1" name="pos47">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Encuestas para alumnos(preguntas de encuentas)</b><hr></hr>
+									<input type="checkbox" value="1" name="pos49">Agregar
+									<input type="checkbox" value="1" name="pos50">Modificar
+									<input type="checkbox" value="1" name="pos51">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Resultados generales de alumnos</b><hr></hr>
+									<input type="checkbox" value="1" name="pos53">Agregar
+									<input type="checkbox" value="1" name="pos54">Modificar
+									<input type="checkbox" value="1" name="pos55">Deshabilitar
+								</div>
+							</td>
+						</tr>
+						<tr class="accesoInv">
+							<td style="vertical-align:text-top;border-top:1px solid grey">Finanzas </td>
+							<td>
+								<div class="tablaPermisos">
+									<b>Proyectos profen</b><hr></hr>
+									<input type="checkbox" value="1" name="pos73">Agregar
+									<input type="checkbox" value="1" name="pos74">Modificar
+									<input type="checkbox" value="1" name="pos75">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Acciones profen</b><hr></hr>
+									<input type="checkbox" value="1" name="pos57">Agregar
+									<input type="checkbox" value="1" name="pos58">Modificar
+									<input type="checkbox" value="1" name="pos59">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Cuentas</b><hr></hr>
+									<input type="checkbox" value="1" name="pos61">Agregar
+									<input type="checkbox" value="1" name="pos62">Modificar
+									<input type="checkbox" value="1" name="pos63">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Traspasos (transacciones)</b><hr></hr>
+									<input type="checkbox" value="1" name="pos65">Agregar
+									<input type="checkbox" value="1" name="pos66">Modificar
+									<input type="checkbox" value="1" name="pos67">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Pagos </b><hr></hr>
+									<input type="checkbox" value="1" name="pos69">Agregar
+									<input type="checkbox" value="1" name="pos70">Modificar
+									<input type="checkbox" value="1" name="pos71">Deshabilitar
+								</div>
+							</td>
+						</tr>
+						<tr class="accesoInv">
+							<td style="vertical-align:text-top;border-top:1px solid grey">Proveedores </td>
+							<td>
+								<div class="tablaPermisos">
+									<input type="checkbox" value="1" name="pos77">Agregar
+									<input type="checkbox" value="1" name="pos78">Modificar
+									<input type="checkbox" value="1" name="pos79">Deshabilitar
+								</div>
+							</td>
+						</tr>
+						<tr class="accesoInv">
+							<td style="vertical-align:text-top;border-top:1px solid grey">Inventarios </td>
+							<td>
+								<div class="tablaPermisos">
+									<b>Categorias </b><hr></hr>
+									<input type="checkbox" value="1" name="pos81">Agregar
+									<input type="checkbox" value="1" name="pos82">Modificar
+									<input type="checkbox" value="1" name="pos83">Deshabilitar
+								</div>
+								<div class="tablaPermisos">
+									<b>Articulos </b>
+									<hr></hr>
+									<input type="checkbox" value="1" name="pos85">Agregar
+									<input type="checkbox" value="1" name="pos86">Modificar
+									<input type="checkbox" value="1" name="pos87">Deshabilitar
+								</div>
+							</td>
+						</tr>
+					</table>
+					<center><button>Guardar</button></center>
+				</form>
+			</div>
+			<div id="modificarPer" style="display:none;" class="tabCont">
+				<h2>Modificar personal ENEA</h2>
+				<div style="padding:8px;position:absolute;top:-20px;right:0;" class="buscar">
+					<input type="search" autofocus padre="modificarPer" placeholder="Buscar por nombre">
+					<img src="imagenes/search.png" onclick="$(this).prev().trigger(\'search\')">
+				</div>
+				<div style="border-bottom:1px solid rgba(0,0,0,0.2);width:95%;padding-left:20px;"></div>';
+				$personal = mysqli_query($conexion, "SELECT * FROM Usuarios WHERE status=1");
+				$numPers = mysqli_num_rows($personal);
+				$pers = 0;				
+				while($pers < $numPers) {
+					$datosPer = mysqli_fetch_assoc($personal);
+					if(file_exists("imagenes/personal/".$datosPer["id_usuario"].".png")){
+						$imagenTmp1=$datosPer["id_usuario"].'.png';
+					}
+					else{
+						if(file_exists("imagenes/personal/".$datosPer["id_usuario"].".jpg")){
+							$imagenTmp1=$datosPer["id_usuario"].'.jpg';
+						}
+						else{
+							if(file_exists("imagenes/personal/".$datosPer["id_usuario"].".gif")){
+								$imagenTmp1=$datosPer["id_usuario"].'.gif';
+							}
+							else {
+								if(file_exists("imagenes/personal/".$datosPer["id_usuario"].".svg")){
+									$imagenTmp1=$datosPer["id_usuario"].'.svg';
+								}
+								else {
+									$imagenTmp1="disable.gif";
+								}
+							}
+						}
+					}
+					echo '
+						<div nombre="'.strtolower($datosPer["nombre"]).'" tipo="fila" style="position:relative;width:95%;padding:10px;border:1px solid rgba(0,0,0,0.2);border-top:none">
+							<b>'.$datosPer["nombre"].'</b>
+							<div id="editarPer'.$datosPer["id_usuario"].'" style="display:none">
+								<form action="accionesPersonal.php" destino="resultadoRegistro" permiso="M">
+									<img onclick="$(this).next().next().trigger(\'click\');"src="imagenes/personal/'.$imagenTmp1.'" style="position:absolute;top:50px;right:80px;width:25%;border:2px solid grey;border-radius:5px"><br>
+									<input type="file" style="display:none" nombre="foto" accept=".jpg, .gif, .png">
+									<input type="hidden" name="accion" value="modificar"> 
+									<input type="hidden" name="id" value="'.$datosPer["id_usuario"].'"> 
+									<table>
+										<tr><td>Nombre completo: <br><small>con apellidos </small> </td><td><input type="text" value="'.$datosPer["nombre"].'" placeholder="Ejemplo: Thomas Ritchie" name="nombre" size="50" required title="Este campo debe completarse"></td><td></td></tr>
+										<tr><td>Nombramiento: <br><small>puesto de trabajo </small> </td><td><input type="text" value="'.$datosPer["nombramiento"].'" placeholder="Ejemplo: Subdirector" name="nombramiento" size="50"></td><td></td></tr>
+										<tr><td>Turno</td><td>
+											<select name="turno" required title="Selecciona el turno">
+												<option value="">Selecciona</option>
+												<option value="matutino">Matutino</option>
+												<option value="vespertino">Vespertino</option>
+												<option value="nocturno">Nocturno</option>
+											</select>
+											<script>
+												opcionestmp = $("#editarPer'.$datosPer["id_usuario"].' select[name=turno]").find("option");
+												opcionestmp.each(function(){
+													if($(this).attr("value")=="'.$datosPer["turno"].'"){
+														$(this).prop("selected", true);
+														return false;
+													}
+												});
+											</script>
+										</td></tr>
+										<tr><td>Sexo: </td><td><input type="radio" value="H" name="sexo" id="sexRPh'.$datosPer["id_usuario"].'"><label for="sexRPh'.$datosPer["id_usuario"].'">Hombre</label>
+											<br><input type="radio" value="M" name="sexo" id="sexRPm'.$datosPer["id_usuario"].'"><label for="sexRPm'.$datosPer["id_usuario"].'">Mujer</label></td><td></td>
+										</tr>
+										<script>
+												$("#editarPer'.$datosPer["id_usuario"].' input[name=sexo][value='.$datosPer["sexo"].']").prop("checked",true);
+										</script>
+										<tr><td>Estado civil</td>
+											<td>
+												<select name="estadoC" required title="Selecciona el estado civil">
+													<option value="">Selecciona</option>
+													<option value="soltero">Soltero / Soltera</option>
+													<option value="casado">Casado / Casada</option>
+													<option value="divorciado">Divorciado / Divorciada</option>
+													<option value="viudo">Viudo / Viuda</option>
+												</select>
+											</td>
+											<td>
+												<script>
+													opcionestmp = $("#editarPer'.$datosPer["id_usuario"].' select[name=estadoC]").find("option");
+													opcionestmp.each(function(){
+														if($(this).attr("value")=="'.$datosPer["estado_civil"].'"){
+															$(this).prop("selected", true);
+															return false;
+														}
+													});
+												</script>
+											</td>
+										</tr>
+										<tr><td>RFC: </td><td><input type="text" placeholder="Ejemplo: VECJ880326 XXX" value="'.$datosPer["rfc"].'" name="rfc" size="25"></td><td></td></tr>
+										<tr><td>Curp: </td><td><input type="text" placeholder="Ejemplo: CXGA91116HDFSRL08" name="curp" value="'.$datosPer["curp"].'" size="28"></td><td></td></tr>
+										<tr><td>Localidad: </td><td><input type="text" placeholder="Ejemplo: Centro" name="localidad" value="'.$datosPer["localidad"].'" size="30"></td><td></td></tr>
+										<tr><td>Municipio: </td><td><input type="text" placeholder="Ejemplo: Arandas" name="municipio" value="'.$datosPer["municipio"].'" size="30"></td><td></td></tr>
+										<tr><td>Domicilio: </td><td><input type="text" placeholder="Ejemplo: Arboleras 256" name="domicilio" value="'.$datosPer["domicilio"].'" size="30"></td><td></td></tr>
+										<tr><td>Telefono: </td><td><input type="text" placeholder="Ejemplo: 3481055555" name="tel" size="25" value="'.$datosPer["telefono"].'" ></td><td></td></tr>
+										<tr><td>Email: </td><td><input type="email" placeholder="Ejemplo: ThomasR@hotmail.com" value="'.$datosPer["email"].'" name="email" size="30" title="Debe ser un email real"></td><td></td></tr>
+										<tr><td>Fecha de nacimiento: </td><td><input type="date" name="fechaN" value="'.$datosPer["fecha_nacimiento"].'"></td><td></td></tr>
+										<tr><td>Fecha de ingreso:<br><small>Ingreso a la ENEA </small></td><td><input type="date" name="fechaIE" value="'.$datosPer["fecha_ingreso_enea"].'"></td><td></td></tr>
+										<tr><td>Fecha de ingreso:<br><small>Ingreso a la SEP </small></td><td><input type="date" name="fechaIS" value="'.$datosPer["fecha_ingreso_sep"].'"></td><td></td></tr>
+										<tr><td>Nivel de estudios</td>
+											<td>
+												<select name="grado" required title="Selecciona el grado de estudios">
+													<option value="">Selecciona</option>
+													<option value="preescolar">Preescolar</option>
+													<option value="primaria">Primaria</option>
+													<option value="secundaria">Secundaria</option>
+													<option value="preparatoria">Preparatoria</option>
+													<option value="licenciatura">Licenciatura</option>
+													<option value="maestria">Maestria</option>
+													<option value="doctorado">Doctorado</option>
+												</select>
+											</td>
+											<td>
+												<script>
+													opcionestmp = $("#editarPer'.$datosPer["id_usuario"].' select[name=grado]").find("option");
+													opcionestmp.each(function(){
+														if($(this).attr("value")=="'.$datosPer["nivel_estudio"].'"){
+															$(this).prop("selected", true);
+															return false;
+														}
+													});
+												</script>
+											</td>
+										</tr>
+										<tr><td>Escuela: </td><td><input type="text" placeholder="Ejemplo: ENEA" name="escuela" size="40" value="'.$datosPer["escuela"].'"></td><td></td></tr>
+										<tr><td>Acta de examen: </td><td><input type="text" placeholder="Ejemplo: MAESTRIA 02 0121" name="actaEx" size="40" value="'.$datosPer["acta_examen"].'"></td><td></td></tr>
+										<tr><td>Fecha de titulación: </td><td><input type="date" name="fechaTi" value="'.$datosPer["fecha_titulacion"].'"></td><td></td></tr>
+										<tr><td>Tema de titulacion: </td><td><input type="text" value="'.$datosPer["tema_titulacion"].'" placeholder="Ejemplo: Programación cognitiva" name="temaTi" size="45"></td><td></td></tr>
+										<tr><td>¿Actualmente estudia? </td>
+											<td>
+												<input onclick="$(\'#filaBeca'.$datosPer["id_usuario"].'\').children().hide()" type="radio" value="0" name="estudio" id="estudioRP1d'.$datosPer["id_usuario"].'"><label for="estudioRP1d'.$datosPer["id_usuario"].'">No estudia</label><br>
+												<input onclick="$(\'#filaBeca'.$datosPer["id_usuario"].'\').children().show()" type="radio" value="1" name="estudio" id="estudioRP2d'.$datosPer["id_usuario"].'"><label for="estudioRP2d'.$datosPer["id_usuario"].'">Si estudia</label>
+											</td>
+										<td>
+											<script>
+												if('.$datosPer["estudio"].'==1){
+													$("#editarPer'.$datosPer["id_usuario"].' input[name=estudio][value=1]").prop("checked",true);
+													$("#filaBeca'.$datosPer["id_usuario"].'").children().show();
+												}
+												else{
+													$("#editarPer'.$datosPer["id_usuario"].' input[name=estudio][value=0]").prop("checked",true);
+												}
+											</script>
+										</td>
+										</tr>
+										<tr id="filaBeca'.$datosPer["id_usuario"].'">
+											<td style="display: none">¿Cuenta con beca? </td>
+											<td style="display: none">
+												<input type="radio" value="1" name="beca" id="becaRP1d'.$datosPer["id_usuario"].'"><label for="becaRP1d'.$datosPer["id_usuario"].'">Si tiene beca</label><br>
+												<input type="radio" value="0" name="beca" id="becaRP2d'.$datosPer["id_usuario"].'"><label for="becaRP2d'.$datosPer["id_usuario"].'">No tiene beca</label>
+											</td>
+											<td>
+												<script>
+													$("#editarPer'.$datosPer["id_usuario"].' input[name=beca][value='.$datosPer["beca"].']").prop("checked",true);
+												</script>
+											</td>
+										</tr>
+										<tr>
+											<td>¿Tiene otro trabajo?</td>
+											<td>
+												<input type="radio" value="0" name="otroJob" id="otroJRP1d'.$datosPer["id_usuario"].'"><label for="otroJRP1d'.$datosPer["id_usuario"].'">No tiene otro trabajo</label><br>
+												<input type="radio" value="1" name="otroJob" id="otroJRP2d'.$datosPer["id_usuario"].'"><label for="otroJRP2d'.$datosPer["id_usuario"].'">Si tiene otro trabajo</label>
+											</td>
+											<td>
+												<script>
+													$("#editarPer'.$datosPer["id_usuario"].' input[name=otroJob][value='.$datosPer["otro_trabajo"].']").prop("checked",true);
+												</script>
+											</td>
+										</tr>
+										<tr>
+											<td>¿Actualmente labora en la ENEA?</td>
+											<td>
+												<input type="radio" value="1" name="actual" id="actualRP1d'.$datosPer["id_usuario"].'"><label for="actualRP1'.$datosPer["id_usuario"].'">Si labora actualmente</label><br>
+												<input type="radio" value="0" name="actual" id="actualRP2"><label for="actualRP2">No labora actualmente</label>
+											</td>
+											<td>
+												<script>
+													$("#editarPer'.$datosPer["id_usuario"].' input[name=actual][value='.$datosPer["status"].']").prop("checked",true);
+												</script>
+											</td>
+										</tr>
+										<tr>
+											<td>Acceso al sistema</td>
+												<td><input type="checkbox" name="acceso" id="accesoRP'.$datosPer["id_usuario"].'" onclick="if($(this).is(\':checked\')){$(this).next().text(\'(Si tendra acceso)\');$(\'tr[u='.$datosPer["id_usuario"].']\').show()}else{$(this).next().text(\'(No tendra acceso)\');$(\'tr[u='.$datosPer["id_usuario"].']\').hide()}"><label for="accesoRP'.$datosPer["id_usuario"].'">(No tendra acceso)</label>
+											</td>
+											<td></td>
+											<script>
+												if('.$datosPer["status_login"].'==1){
+													$("#accesoRP'.$datosPer["id_usuario"].'").prop("checked",true);
+													$("label[for=accesoRP'.$datosPer["id_usuario"].']").text("(Si tiene acceso)");
+													$("tr[u='.$datosPer["id_usuario"].']").show();
+												}
+											</script>
+										</tr>
+										<tr class="accesoInv" u="'.$datosPer["id_usuario"].'"><td>Usuario: </td><td><input type="password" placeholder="Ejemplo: usuario2014" value="'.$datosPer["usuario"].'" name="usuario" size="25"></td><td></td></tr>
+										<tr class="accesoInv" u="'.$datosPer["id_usuario"].'"><td>Contraseña: </td><td><input type="password" placeholder="Ejemplo: contraseña dificil" value="'.$datosPer["password"].'" name="pass" size="25"></td><td></td></tr>
+										<tr class="accesoInv" u="'.$datosPer["id_usuario"].'"><td>Repetir contraseña: </td><td><input type="password" placeholder="Escribe la misma contraseña" value="'.$datosPer["password"].'" name="pass2" size="25"></td><td></td></tr>
+										<tr class="accesoInv" u="'.$datosPer["id_usuario"].'"><td>Tipo de usuario</td><td>
+											<select name="tipoUsuario" title="Selecciona un tipo de usuario predeterminado">
+												<option value="">Selecciona</option>
+												<option value="minimo">Permisos minimos</option>
+												<option value="medios">Medios</option>
+												<option value="maximos">Maximos</option>
+											</select>
+										</td><td></td></tr>
+										<tr class="accesoInv" u="'.$datosPer["id_usuario"].'"><td>Permisos: </td><td>Selecciona los permisos para el usuario en el sistema<br><br></td><td></td></tr>
+										<tr class="accesoInv" u="'.$datosPer["id_usuario"].'">
+											<td style="vertical-align:text-top;border-top:1px solid grey">Recusros humanos </td>
+											<td>
+												<div class="tablaPermisos">
+													<b>Personal</b><hr></hr>
+													<input type="checkbox" value="1" name="pos1">Agregar
+													<input type="checkbox" value="1" name="pos2">Modificar
+													<input type="checkbox" value="1" name="pos3">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Claves</b><hr></hr>
+													<input type="checkbox" value="1" name="pos5">Agregar
+													<input type="checkbox" value="1" name="pos6">Modificar
+													<input type="checkbox" value="1" name="pos7">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Comisiones</b><hr></hr>
+													<input type="checkbox" value="1" name="pos9">Agregar
+													<input type="checkbox" value="1" name="pos10">Modificar
+													<input type="checkbox" value="1" name="pos11">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Viaticos</b><hr></hr>
+													<input type="checkbox" value="1" name="pos13">Agregar
+													<input type="checkbox" value="1" name="pos14">Modificar
+													<input type="checkbox" value="1" name="pos15">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Estimulos</b><hr></hr>
+													<input type="checkbox" value="1" name="pos17">Agregar
+													<input type="checkbox" value="1" name="pos18">Modificar
+													<input type="checkbox" value="1" name="pos19">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Horarios</b><hr></hr>
+													<input type="checkbox" value="1" name="pos21">Agregar
+													<input type="checkbox" value="1" name="pos22">Modificar
+													<input type="checkbox" value="1" name="pos23">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Insidencias</b><hr></hr>
+													<input type="checkbox" value="1" name="pos25">Agregar
+													<input type="checkbox" value="1" name="pos26">Modificar
+													<input type="checkbox" value="1" name="pos27">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Licencias</b><hr></hr>
+													<input type="checkbox" value="1" name="pos29">Agregar
+													<input type="checkbox" value="1" name="pos30">Modificar
+													<input type="checkbox" value="1" name="pos31">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Propuestas</b><hr></hr>
+													<input type="checkbox" value="1" name="pos33">Agregar
+													<input type="checkbox" value="1" name="pos34">Modificar
+													<input type="checkbox" value="1" name="pos35">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Prestadores de servicios</b><hr></hr>
+													<input type="checkbox" value="1" name="pos37">Agregar
+													<input type="checkbox" value="1" name="pos38">Modificar
+													<input type="checkbox" value="1" name="pos39">Deshabilitar
+												</div>
+											</td>
+										</tr>
+										<tr class="accesoInv" u="'.$datosPer["id_usuario"].'">
+											<td style="vertical-align:text-top;border-top:1px solid grey">Control escolar </td>
+											<td>
+												<div class="tablaPermisos">
+													<b>Alumnos</b><hr></hr>
+													<input type="checkbox" value="1" name="pos41">Agregar
+													<input type="checkbox" value="1" name="pos42">Modificar
+													<input type="checkbox" value="1" name="pos43">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Lugares para practicas profesionales</b><hr></hr>
+													<input type="checkbox" value="1" name="pos45">Agregar
+													<input type="checkbox" value="1" name="pos46">Modificar
+													<input type="checkbox" value="1" name="pos47">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Encuestas para alumnos(preguntas de encuentas)</b><hr></hr>
+													<input type="checkbox" value="1" name="pos49">Agregar
+													<input type="checkbox" value="1" name="pos50">Modificar
+													<input type="checkbox" value="1" name="pos51">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Resultados generales de alumnos</b><hr></hr>
+													<input type="checkbox" value="1" name="pos53">Agregar
+													<input type="checkbox" value="1" name="pos54">Modificar
+													<input type="checkbox" value="1" name="pos55">Deshabilitar
+												</div>
+											</td>
+										</tr>
+										<tr class="accesoInv" u="'.$datosPer["id_usuario"].'">
+											<td style="vertical-align:text-top;border-top:1px solid grey">Finanzas </td>
+											<td>
+												<div class="tablaPermisos">
+													<b>Proyectos profen</b><hr></hr>
+													<input type="checkbox" value="1" name="pos73">Agregar
+													<input type="checkbox" value="1" name="pos74">Modificar
+													<input type="checkbox" value="1" name="pos75">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Acciones profen</b><hr></hr>
+													<input type="checkbox" value="1" name="pos57">Agregar
+													<input type="checkbox" value="1" name="pos58">Modificar
+													<input type="checkbox" value="1" name="pos59">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Cuentas</b><hr></hr>
+													<input type="checkbox" value="1" name="pos61">Agregar
+													<input type="checkbox" value="1" name="pos62">Modificar
+													<input type="checkbox" value="1" name="pos63">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Traspasos (transacciones)</b><hr></hr>
+													<input type="checkbox" value="1" name="pos65">Agregar
+													<input type="checkbox" value="1" name="pos66">Modificar
+													<input type="checkbox" value="1" name="pos67">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Pagos </b><hr></hr>
+													<input type="checkbox" value="1" name="pos69">Agregar
+													<input type="checkbox" value="1" name="pos70">Modificar
+													<input type="checkbox" value="1" name="pos71">Deshabilitar
+												</div>
+											</td>
+										</tr>
+										<tr class="accesoInv" u="'.$datosPer["id_usuario"].'">
+											<td style="vertical-align:text-top;border-top:1px solid grey">Proveedores </td>
+											<td>
+												<div class="tablaPermisos">
+													<input type="checkbox" value="1" name="pos77">Agregar
+													<input type="checkbox" value="1" name="pos78">Modificar
+													<input type="checkbox" value="1" name="pos79">Deshabilitar
+												</div>
+											</td>
+										</tr>
+										<tr class="accesoInv" u="'.$datosPer["id_usuario"].'">
+											<td style="vertical-align:text-top;border-top:1px solid grey">Inventarios </td>
+											<td>
+												<div class="tablaPermisos">
+													<b>Categorias </b><hr></hr>
+													<input type="checkbox" value="1" name="pos81">Agregar
+													<input type="checkbox" value="1" name="pos82">Modificar
+													<input type="checkbox" value="1" name="pos83">Deshabilitar
+												</div>
+												<div class="tablaPermisos">
+													<b>Articulos </b>
+													<hr></hr>
+													<input type="checkbox" value="1" name="pos85">Agregar
+													<input type="checkbox" value="1" name="pos86">Modificar
+													<input type="checkbox" value="1" name="pos87">Deshabilitar
+												</div>
+												<script>
+													if("'.$datosPer["permisos"].'"!=""){
+														permisosJs = "'.$datosPer["permisos"].'".split("");
+														for(x=0; x<permisosJs.length;x++){
+															if(permisosJs[x]=="1"){
+																$("#editarPer'.$datosPer["id_usuario"].' :checkbox[name=pos"+parseInt(x+1)+"]").prop("checked", true);
+															}
+														}
+													}
+												</script>
+											</td>
+										</tr>
+									</table>
+									<center><hr></hr><button>Guardar cambios</button></center>
+								</form>
+							</div>
+							<div id="desPer'.$datosPer["id_usuario"].'" style="display:none" permiso="D">
+								<form destino="resultadoRegistro" action="accionesPersonal.php" style="display:inline-block">
+									<input type="hidden" name="accion" value="deshabilitar">
+									<input type="hidden" name="id" value="'.$datosPer["id_usuario"].'">
+									<br>¿Estas seguro que deseas deshabilitar a esta persona <b>'.$datosPer["nombre"].'</b>?
+									<button >Si, estoy seguro</button>									
+								</form>
+								<button style="display:inline-block" onclick="$(this).parent().toggle(\'drop\')">No</button>
+								<p>Atencion: esta accion desactivara a esta persona del sistema</p>
+							</div>
+							<img src="imagenes/edit.png" style="position:absolute;top:4px;right:32px;cursor:pointer" onclick="$(\'#editarPer'.$datosPer["id_usuario"].'\').toggle(\'drop\')">
+							<img src="imagenes/bin.png" permiso="D" style="position:absolute;top:4px;right:4px;cursor:pointer" onclick="$(\'#desPer'.$datosPer["id_usuario"].'\').toggle(\'drop\')">
+						</div>
+					'.mysqli_error($conexion);
+					$pers++;	
+				}
+				mysqli_free_result($personal);
+				echo'
+				<div style="height:20px;width:95%;padding-left:20px;"></div>
+			</div>
+			<div id="documentosPer" style="display:none;" class="tabCont">
+				<h2>Documentos digitales del personal</h2>
+				<div style="padding:8px;position:absolute;top:-20px;right:0;" class="buscar">
+					<input type="search" autofocus padre="documentosPer" placeholder="Buscar por nombre">
+					<img src="imagenes/search.png" onclick="$(this).prev().trigger(\'search\')">
+				</div>
+				<div style="border-bottom:1px solid rgba(0,0,0,0.2);width:95%;padding-left:20px;"></div>';
+				$personal = mysqli_query($conexion, "SELECT * FROM Usuarios WHERE status=1");
+				$numPers = mysqli_num_rows($personal);
+				$pers = 0;				
+				while($pers < $numPers) {
+					$datosPer = mysqli_fetch_assoc($personal);
+					if(file_exists("imagenes/personal/".$datosPer["id_usuario"].".png")){
+						$imagenTmp1=$datosPer["id_usuario"].'.png';
+					}
+					else{
+						if(file_exists("imagenes/personal/".$datosPer["id_usuario"].".jpg")){
+							$imagenTmp1=$datosPer["id_usuario"].'.jpg';
+						}
+						else{
+							if(file_exists("imagenes/personal/".$datosPer["id_usuario"].".gif")){
+								$imagenTmp1=$datosPer["id_usuario"].'.gif';
+							}
+							else {
+								if(file_exists("imagenes/personal/".$datosPer["id_usuario"].".svg")){
+									$imagenTmp1=$datosPer["id_usuario"].'.svg';
+								}
+								else {
+									$imagenTmp1="disable.gif";
+								}
+							}
+						}
+					}
+					echo '
+						<div nombre="'.strtolower($datosPer["nombre"]).'" tipo="fila" style="position:relative;width:95%;padding:10px;border:1px solid rgba(0,0,0,0.2);border-top:none">
+							<b>'.$datosPer["nombre"].'</b>							
+							<div id="docsPer'.$datosPer["id_usuario"].'" style="display:none">
+								<div style="padding:8px;position:absolute;top:0;right:50px;" class="buscar">
+									<input type="search" autofocus padre="docsPer" placeholder="Buscar por nombre">
+									<img src="imagenes/search.png" onclick="$(this).prev().trigger(\'search\')">
+								</div>
+								<br><br>
+								<div style="border-bottom:1px solid rgba(0,0,0,0.2);width:95%;padding-left:20px;"></div>
+								<br><br>
+							</div>
+							<img src="imagenes/folder.png" style="position:absolute;top:4px;right:4px;cursor:pointer" onclick="$(\'#docsPer'.$datosPer["id_usuario"].'\').toggle(\'drop\')">
+						</div>
+					'.mysqli_error($conexion);
+					$pers++;	
+				}
+				mysqli_free_result($personal);
+			echo '
+				<div style="height:20px;width:95%;padding-left:20px;"></div>
+			</div>	
+			<div id="restaurarPer" style="display:none;" class="tabCont">
+				<h2>Restaurar personal ENEA</h2>
+				<div style="padding:8px;position:absolute;top:-20px;right:0;" class="buscar">
+					<input type="search" autofocus padre="restaurarPer" placeholder="Buscar por nombre">
+					<img src="imagenes/search.png" onclick="$(this).prev().trigger(\'search\')">
+				</div>
+				<div style="border-bottom:1px solid rgba(0,0,0,0.2);width:95%;padding-left:20px;"></div>';
+				$personal = mysqli_query($conexion, "SELECT * FROM Usuarios WHERE status=0");
+				$numPers = mysqli_num_rows($personal);
+				$pers = 0;				
+				while($pers < $numPers) {
+					$datosPer = mysqli_fetch_assoc($personal);
+					if(file_exists("imagenes/personal/".$datosPer["id_usuario"].".png")){
+						$imagenTmp1=$datosPer["id_usuario"].'.png';
+					}
+					else{
+						if(file_exists("imagenes/personal/".$datosPer["id_usuario"].".jpg")){
+							$imagenTmp1=$datosPer["id_usuario"].'.jpg';
+						}
+						else{
+							if(file_exists("imagenes/personal/".$datosPer["id_usuario"].".gif")){
+								$imagenTmp1=$datosPer["id_usuario"].'.gif';
+							}
+							else {
+								if(file_exists("imagenes/personal/".$datosPer["id_usuario"].".svg")){
+									$imagenTmp1=$datosPer["id_usuario"].'.svg';
+								}
+								else {
+									$imagenTmp1="disable.gif";
+								}
+							}
+						}
+					}
+					echo '
+						<div nombre="'.strtolower($datosPer["nombre"]).'" tipo="fila" style="position:relative;width:95%;padding:10px;border:1px solid rgba(0,0,0,0.2);border-top:none">
+							<b>'.$datosPer["nombre"].'</b>							
+							<div id="resPer'.$datosPer["id_usuario"].'" style="display:none">
+								<form destino="resultadoRegistro" action="accionesPersonal.php" style="display:inline-block">
+									<input type="hidden" name="accion" value="restaurar">
+									<input type="hidden" name="id" value="'.$datosPer["id_usuario"].'">
+									<br>¿Estas seguro que deseas restaurar a esta persona <b>'.$datosPer["nombre"].'</b>?
+									<button >Si, estoy seguro</button>									
+								</form>
+								<button style="display:inline-block" onclick="$(this).parent().toggle(\'drop\')">No</button>
+								<p>Atencion: esta accion <b>restaurara</b> a esta persona en el sistema (el inicio de sesion estara deshabilitado)</p>
+							</div>
+							<img src="imagenes/checkmark.png" style="position:absolute;top:4px;right:4px;cursor:pointer" onclick="$(\'#resPer'.$datosPer["id_usuario"].'\').toggle(\'drop\')">
+						</div>
+					'.mysqli_error($conexion);
+					$pers++;	
+				}
+				mysqli_free_result($personal);
+			echo '
+				<div style="height:20px;width:95%;padding-left:20px;"></div>
+			</div>		
+		</div>
+	</div>
+	';
+	if(substr($_SESSION["Permisos_Eneaware"][0],0,1)=="0"){
+		echo "<script>$('#principalInner [permiso=A]').remove()</script>";
+	}
+	if(substr($_SESSION["Permisos_Eneaware"][0],1,1)=="0"){
+		echo "<script>$('#principalInner [permiso=D]').remove()</script>";
+	}
+	if(substr($_SESSION["Permisos_Eneaware"][0],2,1)=="0"){
+		echo "
+			<script>
+				$('#principalInner form[permiso=M] input').prop('disabled', true);
+				$('#principalInner form[permiso=M] select').prop('disabled', true);
+				$('#principalInner form[permiso=M] button').remove();
+			</script>";
+	}
+	mysqli_close($conexion);
+?>

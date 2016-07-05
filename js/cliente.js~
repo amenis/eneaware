@@ -1,0 +1,123 @@
+
+$(document).on("pageinit",function(event){
+	  $(window).on("orientationchange",function(event){
+	    /*alert("Orientation changed to: " + event.orientation);*/	    
+			localStorage["posicion"] = event.orientation;		
+	    redimencionar(event.orientation);
+		});
+		$("[data-role=collapsible]").bind("expand", function () {
+	    	$(this).children().not("h1").hide().show();
+	    	$("[data-role=collapsible]").not($(this)).trigger("collapse");
+	    	var idCat = $(this).attr("cat");
+	    	$("#imagenInicial, .categoriaD").not($("#cat"+idCat+", #catF"+idCat)).hide();
+	    	$("#cat"+idCat).show();
+	    	$("#catF"+idCat).show();
+		}).bind("collapse", function () {
+	    	$(this).children().next().hide();
+		});
+		var letra = "";
+		$(".slideAbcd").on("slidestart", function(e){
+			var porcentaje = ($(this).val()*3.57)-3;
+			switch(parseInt($(this).val())) {
+				case 1: letra = "#";break;
+				case 2: letra = "A";break;
+				case 3: letra = "B";break;
+				case 4: letra = "C";break;
+				case 5: letra = "D";break;
+				case 6: letra = "E";break;
+				case 7: letra = "F";break;
+				case 8: letra = "G";break;
+				case 9: letra = "H";break;
+				case 10: letra = "I";break;
+				case 11: letra = "J";break;
+				case 12: letra = "K";break;
+				case 13: letra = "L";break;
+				case 14: letra = "M";break;
+				case 15: letra = "N";break;
+				case 16: letra = "Ñ";break;
+				case 17: letra = "O";break;
+				case 18: letra = "P";break;
+				case 19: letra = "Q";break;
+				case 20: letra = "R";break;
+				case 21: letra = "S";break;
+				case 22: letra = "T";break;
+				case 22: letra = "U";break;
+				case 24: letra = "V";break;
+				case 25: letra = "W";break;
+				case 26: letra = "X";break;
+				case 27: letra = "Y";break;
+				case 28: letra = "Z";break;
+			}
+			$("#letra"+$(this).attr("idSub")).show().html(letra).stop().css({left:porcentaje+"%"});
+		}).on("change", function(){
+			var porcentaje = ($(this).val()*3.57)-3;
+			switch(parseInt($(this).val())) {
+				case 1: letra = "#";break;
+				case 2: letra = "A";break;
+				case 3: letra = "B";break;
+				case 4: letra = "C";break;
+				case 5: letra = "D";break;
+				case 6: letra = "E";break;
+				case 7: letra = "F";break;
+				case 8: letra = "G";break;
+				case 9: letra = "H";break;
+				case 10: letra = "I";break;
+				case 11: letra = "J";break;
+				case 12: letra = "K";break;
+				case 13: letra = "L";break;
+				case 14: letra = "M";break;
+				case 15: letra = "N";break;
+				case 16: letra = "Ñ";break;
+				case 17: letra = "O";break;
+				case 18: letra = "P";break;
+				case 19: letra = "Q";break;
+				case 20: letra = "R";break;
+				case 21: letra = "S";break;
+				case 22: letra = "T";break;
+				case 22: letra = "U";break;
+				case 24: letra = "V";break;
+				case 25: letra = "W";break;
+				case 26: letra = "X";break;
+				case 27: letra = "Y";break;
+				case 28: letra = "Z";break;
+			}
+			$("#letra"+$(this).attr("idSub")).show().html(letra).stop().css({left:porcentaje+"%"});
+		}).on("slidestop", function(){
+			destino = $("#wrap"+$(this).attr("idSub")).find("[letra='"+letra+"']:first");
+			$("#letra"+$(this).attr("idSub")).hide();
+			$("#wrap"+$(this).attr("idSub")).parent().scrollTo(destino,0 );
+		});
+		
+		//redimencionar(localStorage["posicion"]);               
+	});
+
+function redimencionar(posicion){
+	if(posicion=="portrait"){
+		$("img[redimensionable='true']").animate({width:"90%"}, 500).animateAuto("height", 500);
+	}
+	if(posicion=="landscape"){
+		$("img[redimensionable='true']").animate({height:"90%"}, 500).animateAuto("width", 500);
+	}
+}
+
+jQuery.fn.animateAuto = function(prop, speed, callback){
+    var elem, height, width;
+    return this.each(function(i, el){
+        el = jQuery(el), elem = el.clone().css({"height":"auto","width":"auto"}).appendTo("body");
+        height = elem.css("height"),
+        width = elem.css("width"),
+        elem.remove();
+        
+        if(prop === "height")
+            el.animate({"height":height}, speed, callback);
+        else if(prop === "width")
+            el.animate({"width":width}, speed, callback);  
+        else if(prop === "both")
+            el.animate({"width":width,"height":height}, speed, callback);
+    });  
+}
+
+function buscar(idSub, valor) {
+	destino = $("#wrap"+idSub).find("[producto^='"+valor.toUpperCase()+"']");
+	$("#wrap"+idSub).parent().scrollTo(destino,1000 );
+}

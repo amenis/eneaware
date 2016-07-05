@@ -1,0 +1,238 @@
+<?php
+session_start();
+	include("conexion.php");
+	echo '
+	<div style="overflow:auto;height:100%">
+		<h1>Registro de Inicidencias </h1>
+		<button class="tab seleccionado"  style="border-bottom:none;" permiso="A" mostrar="RegistrarFaltas">Registro de Faltas</button>
+		<button class="tab" style="border-bottom:none;" permiso="A" mostrar="RegistrarInci">Registro de Inicidencias</button>
+		<button class="tab" style="border-bottom:none;" mostrar="modificarInci">Ver / Modificar Incidencias y Faltas</button>
+		  <div style="background:rgba(255,255,255,0.65);border:1px solid rgba(0,0,0,0.2);padding-left:20px;">
+			<div id="RegistrarFaltas" class="tabCont" permiso="A">
+				<h2>Registro de Faltas</h2>
+				<form action="accionesIncidencias.php" destino="resultadoRegistro">
+					<input type="hidden" name="accion" value="registro" />
+					<input type="hidden" name="guarda" value="Gfaltas"/>
+					<table>
+						<tr>
+							<td>Selecciona al Personal</td>
+							<td>';
+								$user = mysqli_query($conexion,"SELECT nombre,id_usuario,rfc FROM Usuarios WHERE status=1");
+									$cantD = mysqli_num_rows($user);
+									$cant=0;
+									echo'<select name="usuario">';
+									while($cant < $cantD){
+										$datosU = @mysqli_fetch_array($user);
+										echo'<option value="'.$datosU['id_usuario'].'" rfc=>'.$datosU['nombre'].'</option>';
+										$cant++;
+									}
+									
+									echo'</select>';
+									mysqli_free_result($user);
+							echo'
+							</td>							
+						</tr>
+						<tr>
+							<td>Fecha</td>
+							<td><input type="date" name="fecha"/></td>
+						</tr>
+						<tr>
+							<td>Registar Falta</td>
+							<td>
+								<select name="status">
+									<option value="1" >Si</option>
+									<option value="0" >No</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+					<center><button>Guardar</button></center>
+				</form>
+			</div>
+			<div id="RegistrarInci" class="tabCont" permiso="A" style="display:none">
+				<h2>Registrar Inicidencias</h2>
+				<form action="accionesIncidencias.php" destino="resultadoRegistro">
+					<input type="hidden" name="accion" value="registro"> 
+					<input type="hidden" name="guarda" value="Ginci"/>
+						<table >';
+							$max = mysqli_query($conexion,"SELECT MAX(id_incidencia) FROM Insidencias");
+							$arrInc = @mysqli_fetch_row($max);
+							mysqli_free_result($max);
+							echo'
+							<tr><td># de incidencia</td><td><input name="numero" type="text" size="30" value="'.($arrInc[0]+1).'"></td></tr>
+							<tr>
+								<td>Nombre</td>
+								<td>';
+									$user = mysqli_query($conexion,"SELECT nombre,id_usuario,rfc FROM Usuarios WHERE status=1");
+									$cantD = mysqli_num_rows($user);
+									$cant=0;
+									echo'<select name="usuario">';
+									while($cant < $cantD){
+										$datosU = @mysqli_fetch_array($user);
+										echo'<option value="'.$datosU['id_usuario'].'" rfc=>'.$datosU['nombre'].'</option>';
+										$cant++;
+									}
+									
+									echo'</select>';
+									mysqli_free_result($user);
+								echo'
+								</td>
+							</tr>
+							<tr><td>Fecha de incio</td><td><input name="FI" type="date"></td></tr>
+							<tr><td>Fecha Final</td><td><input name="fFinal" type="date"></td></tr>
+							<tr><td>Enfermedad General</td><td><input name="enf_gral" type="number" min="0"></td></tr>
+							<tr><td>Notas</td><td><textArea name="notas" rows="7" cols="25"></textArea></td></tr>
+							
+						</table>			
+						
+					
+					<center><button>Guardar</button></center>
+				</form>
+			</div>
+			<div id="modificarInci" style="display:none;" class="tabCont">
+				<h2>Modificar Faltas e Inicidencias</h2>
+				<div style="padding:8px;position:absolute;top:-20px;right:0;" class="buscar">
+					<input type="search" autofocus padre="incidencias.php" hijo="modFI" placeholder="Buscar por nombre">
+					<img src="imagenes/search.png" onclick="$(this).prev().trigger(\'search\')">
+				</div>
+				<div id="modFI">';
+					$num_pd=2;
+					if(isset($_POST['number'])){
+						$pagD = $_POST['number']* $num_pd;
+						$PagActD= $_POST['number'];
+						
+					}
+					else{
+						$pagD=0;
+						$PagActD=1;
+
+					}
+					if(isset($_POST['busqueda'])){
+						$sqlD = "SELECT * FROM Usuarios WHERE status=1 AND nombre LIKE'%".$_POST['busqueda']."%'";
+						$sql2D = "SELECT * FROM Usuarios WHERE status=1 AND nombre LIKE '%".$_POST['busqueda']."%' LIMIT ".$pagD.",".$num_pd."";
+					}
+					else{
+						$sqlD = "SELECT * FROM Usuarios WHERE status=1 ";
+						$sql2D = "SELECT * FROM Usuarios WHERE status=1 LIMIT ".$pagD.",".$num_pd."";	
+					}
+
+					$personal = mysqli_query($conexion,$sqlD);
+					$numPers = mysqli_num_rows($personal);
+					$PagUltD = floor($numPers/$num_pd)+1;
+					$pers = 0;			
+					$personal2 = mysqli_query($conexion,$sql2D);
+					$num_Do = mysqli_num_rows($personal2);	
+
+					while($pers < $num_Do){
+						$datosU = @mysqli_fetch_array($personal2);
+						echo'
+						<div nombre="'.strtolower($datosU['nombre']).'"  tipo="fila" style="position:relative;width:95%;padding:10px;border:1px solid rgba(0,0,0,0.2);">
+							<b>'.$datosU['nombre'].'</b>
+
+								<div class="fi'.$datosU['id_usuario'].'" style="display:none; position:relative;width:95%;padding:10px;border:1px solid rgba(0,0,0,0.2);border-top:none">
+									Faltas y Asistencias 
+									<img src="imagenes/plus.png" style="position:absolute;top:4px;right:4px;cursor:pointer" onclick="$(\'.FA'.$datosU['id_usuario'].'\').toggle(\'drop\')"><br/>';
+									$faltas= mysqli_query($conexion,"SELECT * FROM Asistencia_personal WHERE id_usuario=".$datosU['id_usuario']);
+									while($dataF = @mysqli_fetch_array($faltas)){
+										echo '
+											<div class="FA'.$datosU['id_usuario'].'" style="position:relative;width:95%;padding:10px;border:1px solid rgba(0,0,0,0.2);border-top:none; display:none">
+												Fecha: '.$dataF['fecha'].''; 
+												echo ($dataF['status']==1) ? '<span style="padding-left:30px;"><b>Asistio</b></span>': '<span style="padding-left:30px;"><b>No Asistio</b></span>';
+												echo'<img src="imagenes/edit.png" style="position:absolute;top:4px;right:30px;cursor:pointer" onclick="$(this).next().toggle(\'drop\')">												
+												<form style="display:none" action="accionesIncidencias.php" destino="resultadoRegistro">
+													<input type="hidden" name="accion" value="editar">
+													<input type="hidden" name="opcion" value="fa">
+													<input type="hidden" name="id" value="'.$dataF['id_asistencia'].'">
+													Estas Seguro que Deseas Cambiar el Estado a '; 
+													if($dataF['status']==1){
+														echo 'No
+														<input type="hidden" name="status" value="0">';
+													}
+													else{
+														echo 'Si
+														<input type="hidden" name="status" value="1">';
+													}
+												echo'
+													<br/>
+													<center><button>Editar</button></center>
+												</form>
+											</div>
+										';
+									}
+									mysqli_free_result($faltas);
+								echo'	
+								</div>
+
+								<div  class="fi'.$datosU['id_usuario'].'" style="display:none; position:relative;width:95%;padding:10px;border:1px solid rgba(0,0,0,0.2);border-top:none">
+									Inicidencias<br/>
+									<img src="imagenes/plus.png" style="position:absolute;top:4px;right:4px;cursor:pointer" onclick="$(\'.inci'.$datosU['id_usuario'].'\').toggle(\'drop\')"><br/>';
+									$incidencias = mysqli_query($conexion,"SELECT * FROM Insidencias WHERE id_usuario=".$datosU['id_usuario']);
+									while($inciData = @mysqli_fetch_array($incidencias)){
+										echo '
+										<div class="inci'.$datosU['id_usuario'].'" style="position:relative;width:95%;padding:10px;border:1px solid rgba(0,0,0,0.2);border-top:none; display:none">
+											<span >Fecha Inicio: '.$inciData['fecha_inicio'].'<span><span style="padding-left:30px;">Fecha Final: '.$inciData['fecha_final'].'</span><span><span style="padding-left:30px;">#: '.$inciData['no_incidencia'].'</span>
+											<img src="imagenes/edit.png" style="position:absolute;top:4px;right:30px;cursor:pointer" onclick="$(this).next().toggle(\'drop\')">
+											<form action="accionesIncidencias.php" destino="resultadoRegistro" style="display:none">
+												<input type="hidden" name="accion" value="editar">
+												<input type="hidden" name="opcion" value="inci">
+												<input type="hidden" name="id" value="'.$inciData['id_incidencia'].'">
+												<table>
+													<tr><td>Fecha de incio</td><td><input name="FI" type="date" value="'.$inciData['fecha_inicio'].'"></td></tr>
+													<tr><td>Fecha Final</td><td><input name="fFinal" type="date" value="'.$inciData['fecha_final'].'"></td></tr>
+													<tr><td>Enfermedad General</td><td><input name="tipo" type="number" min="0" value="'.$inciData['tipo'].'"></td></tr>
+													<tr><td>Notas</td><td><textArea name="notas" rows="7" cols="25">'.$inciData['notas'].'</textArea></td></tr>
+												</table>
+												<center><button>Editar</button></center>
+											</form>
+										</div>
+										';
+									}
+									mysqli_free_result($incidencias);
+								echo'
+									
+								</div>
+							<img src="imagenes/plus.png" style="position:absolute;top:4px;right:4px;cursor:pointer" onclick="$(\'.fi'.$datosU["id_usuario"].'\').toggle(\'drop\')">
+						</div>';	
+						$pers++;
+					}
+					$PagAnt=$PagActD-1;
+ 					$PagSig=$PagActD+1;
+ 				
+ 					if($PagActD>1 && $PagActD<$PagUltD ){
+ 						echo 
+						'<button style="position:relative; top:25%; left:85%;" onclick=" atrasar('.$PagAnt.',\'incidencias.php\',\'modFI\')"> << </button> 
+						 <button style="position:relative; top:25%; left:90%;" onclick="adelantar('.$PagSig.',\'incidencias.php\',\'modFI\')"> >> </button>';
+					}
+					if($PagActD<$PagUltD){
+						echo  '<button style="position:relative; top:25%; left:90%;" onclick="adelantar('.$PagSig.',\'incidencias.php\',\'modFI\')"> >> </button>';
+					}
+					if($PagActD==$PagUltD &&$PagActD!=1){
+						echo '<button style="position:relative; top:25%; left:85%;" onclick=" atrasar('.$PagAnt.',\'incidencias.php\',\'modFI\')"> << </button>';
+					}				
+					mysqli_free_result($personal);
+					mysqli_free_result($personal2);	
+						
+					
+				echo'
+				</div>	
+				<div style="height:20px;width:95%;padding-left:20px;"></div>		
+			</div>				
+		</div>
+	</div>
+	';
+	if(substr($_SESSION["Permisos_Eneaware"][6],0,1)=="0"){
+		echo "<script>$('#principalInner [permiso=A]').remove()</script>";
+	}
+	if(substr($_SESSION["Permisos_Eneaware"][6],1,1)=="0"){
+		echo "<script>$('#principalInner [permiso=D]').remove()</script>";
+	}
+	if(substr($_SESSION["Permisos_Eneaware"][6],2,1)=="0"){
+		echo "
+			<script>
+				$('#principalInner form[permiso=M] input').prop('disabled', true);
+				$('#principalInner form[permiso=M] select').prop('disabled', true);
+				$('#principalInner form[permiso=M] button').remove();
+			</script>";
+	}
+	mysqli_close($conexion);
+?>

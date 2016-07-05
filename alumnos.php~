@@ -1,0 +1,654 @@
+<?php
+session_start();
+include('conexion.php');
+echo'<div style="overflow:auto;height:100%">
+		<h1>Administracion de Alumnos</h1>
+		<button class="tab seleccionado"  style="border-bottom:none;" mostrar="RegistrarAlum" permiso="A">Registrar Alumnado</button>
+		<button class="tab" style="border-bottom:none;" mostrar="modificarA">Ver / Modificar Informacion del Alumnado</button>	
+		<button class="tab" style="border-bottom:none;" mostrar="reinscripcion">Reinscripciones</button>	
+		<button class="tab" style="border-bottom:none;" mostrar="documentosAl">Documentos digitales</button>
+		<button class="tab" style="border-bottom:none;" mostrar="restaurarA">Restaurar Alumno</button>	
+		
+
+		<div style="background:rgba(255,255,255,0.65);border:1px solid rgba(0,0,0,0.2);padding-left:20px;">
+			<div id="RegistrarAlum" class="tabCont" permiso="A">
+				<h2>Registro de Alumnos</h2>
+				<form destino="resultadoRegistro" action="accionesAlumno.php" style="width:95%">
+						<input type="hidden" name="option" value="reg">
+					<table>
+						<tr><td>Apellido Paterno</td><td><input type="text" name="apP" placeholder="Ejemplo: Méndez" size="25" required title="Este campo no puede quedar vacio" autofocus></td><td></td></tr>
+						<tr><td>Apellido Materno</td><td><input type="text" name="apM" placeholder="Ejemplo: arballo" size="25" required title="Este campo no puede quedar vacio" autofocus></td><td></td></tr>
+						<tr><td>Nombre</td><td><input type="text" name="nombre" placeholder="Ejemplo: Carlos Arturo " size="25" required title="Este campo no puede quedar vacio" autofocus></td><td></td></tr>
+						<tr><td> Matricula</td><td><input type="text" placeholder="Ejemplo: 15080002" size="50" name="matricula"></td><td><td></tr>
+						<tr><td>Sexo</td><td> <input type="radio" id="sexRPH" value="H" name="sexo" checked><label for="sexRPH">Hombre</label><br><input type="radio" id="sexRPM" name="sexo" value="M"><label for="sexRPM">Mujer</label></td><td></td></tr>
+						<tr><td>Curp</td><td><input type="text" placeholder="Ejemplo: MECC020123HDFNRR04" name="curp" size="50" pattern="[A-Z0-9]{18}" title="Debe de tener una longitud de 18 digitos"></td></td></td></tr>
+						<tr><td>Fecha de Nacimiento</td><td><input type="date" name="fechaN"></td><td></td></tr>
+						<tr><td>Telefono de Casa</td><td><input type="text" name="telCasa" placeholder="Ejemplo: 7810967"></td><td></td></tr>
+						<tr><td>Telefono Celular</td><td><input type="text" name="telCel" placeholder="Ejemplo: 3481116699"></td><td></td></tr>
+						<tr><td>Email </td><td><input type="email" placeholder="Ejemplo: ThomasR@hotmail.com" name="email" size="30" title="Debe ser un email real"></td><td></td></tr>
+						<tr><td>Domicilio</td><td><input type="text" name="dom" placeholder="Ejemplo: Zaragoza"></td><td></td></tr>
+						<tr><td>Numero Exterior</td><td><input type="text" name="NumExt" placeholder="Ejemplo: #253"></td><td></td></tr>
+						<tr><td>Numero Interior</td><td><input type="text" name="NumInt" placeholder="Ejemplo: 12"></td><td></td></tr>
+						<tr><td>Colonia</td><td><input type="text" name="colonia" placeholder="Ejemplo: Centro" ></td><td></td></tr>
+						<tr><td>Municipio</td><td><input type="text" name="municipio" placeholder="Ejemplo: Arandas"></td><td></td></tr>
+						<tr><td>Codigo Postal</td><td><input type="text" name="cp" placeholder="Ejemplo: 47180"></td><td></td></tr>
+						<tr><td>Estado</td>
+							<td>
+								<select name="state" id="state">
+									<option value="Aguascalientes">Aguascalientes</option>
+									<option value="Baja California">Baja California</option>
+									<option value="Baja California Sur">Baja California Sur</option>
+									<option value="Campeche">Campeche</option>
+									<option value="Chiapas">Chiapas</option>
+									<option value="Chihuahua">Chihuahua</option>
+									<option value="Coahuila">Coahuila</option>
+									<option value="Colima">Colima</option>
+									<option value="Distrito Federal">Distrito Federal</option>
+									<option value="Durango">Durango</option>
+									<option value="Estado de México">Estado de México</option>
+									<option value="Guanajuato">Guanajuato</option>
+									<option value="Guerrero">Guerrero</option>
+									<option value="Hidalgo">Hidalgo</option>
+									<option value="Jalisco">Jalisco</option>
+									<option value="Michoacán">Michoacán</option>
+									<option value="Morelos">Morelos</option>
+									<option value="Nayarit">Nayarit</option>
+									<option value="Nuevo León">Nuevo León</option>
+									<option value="Oaxaca">Oaxaca</option>
+									<option value="Puebla">Puebla</option>
+									<option value="Querétaro">Querétaro</option>
+									<option value="Quintana Roo">Quintana Roo</option>
+									<option value="San Luis Potosí">San Luis Potosí</option>
+									<option value="Sinaloa">Sinaloa</option>
+									<option value="Sonora">Sonora</option>
+									<option value="Tabasco">Tabasco</option>
+									<option value="Tamaulipas">Tamaulipas</option>
+									<option value="Tlaxcala">Tlaxcala</option>
+									<option value="Veracruz">Veracruz</option>
+									<option value="Yucatán">Yucatán</option>
+									<option value="Zacatecas">Zacatecas</option>
+								</select>
+							</td><td></td>
+						</tr>
+						<tr><td>¿Vive Fuera?</td><td>						
+								<input onclick="$(\'.Fora\').hide()" type="radio" id="rFoN" value="N" name="foraneo" checked><label for="rFoN">No</label><br>
+								<input onclick="$(\'.Fora\').show()" type="radio" id="rFoS" value="S" name="foraneo"><label for="rFoS">Si</label>
+							</td><td></td></tr>							
+						<tr class="Fora" style="display:none;"><td >Domicilio</td><td><input type="text" name="calleF" placeholder="Ejemplo: Zaragoza" size="30"></td><td></td></tr>
+						<tr  class="Fora" style="display:none;"><td>Numero Exterior</td><td><input type="text" name="NumExtF" placeholder="Ejemplo: #253"></td><td></td></tr>
+						<tr  class="Fora" style="display:none;"><td  >Numero Interior</td><td ><input type="text" name="NumIntF" placeholder="Ejemplo: 12"></td><td></td></tr>
+						<tr  class="Fora" style="display:none;"><td >Colonia</td><td ><input type="text" name="coloniaF" placeholder="Ejemplo: Centro" ></td><td></td></tr>
+						<tr  class="Fora" style="display:none;"><td>Municipio</td><td ><input type="text" name="municipioF" placeholder="Ejemplo: Arandas"></td><td></td></tr>
+						<tr class="Fora" style="display:none;" ><td>Codigo Postal</td><td><input type="text" name="cpF" placeholder="Ejemplo: 2456" ></td><td></td></tr>
+						<tr class="Fora" style="display:none;"> <td>Estado</td><td><input type="text" name="estadoF" placeholder="Ejemplo: Jalisco"></td><td></td></tr>
+						<tr><td>"¿Tiene tutor?</td><td>
+								<input onclick="$(\'.tuto\').hide()" type="radio" id="TN" value="N" name="tutor" checked><label for="TN">No</label><br>
+								<input onclick="$(\'.tuto\').show()" type="radio" name="tutor" id="TS" value="S"><label for="TS">Si</label>
+							</td><td></td>
+						</tr>
+						<tr class="tuto" style="display:none;"><td>Nombre del Tutor</td><td><input type="text" name="tutor" placeholder="Ejemplo: Juan Perez"></td><td></td></tr>
+						<tr class="tuto" style="display:none;"><td>Domicilio del Tutor</td><td><input type="text" name="domTu" placeholder="Ejemplo: Hernandez #120"></td><td></td></tr>
+						<tr><td>Nombre del Padre</td><td><input type="text" name="padre" placeholder="Ejemplo: Pancho"></td><td></td></tr>
+						<tr><td>Domicilio del Padre</td><td><input type="text" name="DomPa" placeholder="Ejemplo: Corona #32"></td><td></td></tr>
+						<tr><td>Nombre del Madre</td><td><input type="text" name="madre" placeholder="Ejemplo: Irene"></td><td></td></tr>
+						<tr><td>Domicilio del Madre</td><td><input type="text" name="DomMa" placeholder="Ejemplo: Corona #32"></td><td></td></tr>
+						<tr><td>En caso de emergencia llamar a </td><td><input type="text" name="emerg" placeholder="Ejemplo: Irene"></td><td></td></tr>
+						<tr><td>Domicilio de Emergencia</td><td><input type="text" name="domEme" placeholder="Ejemplo: colon #23"></td><td></td></tr>
+						<tr><td>Telefono de Emergencia</td><td><input type="text" name="telEme" placeholder="Ejemplo: 3312547895"></td><td></td></tr>
+						<tr><td>Tipo de Sangre</td><td><input type="text" name="tipSan" placeholder="Ejemplo: O+"></td><td></td></tr>
+						<tr><td>Bachillerato </td><td><input type="text" name="bachi" placeholder="Ejemplo: UDG "></td><td></td></tr>
+						<tr><td>Fecha de Ingreso</td><td><input type="date" name="inside" ></td><td></td></tr>
+						<tr><td>Carrera </td><td><input type="text" name="carrera" placeholder="Ejemplo: Lincenciatura en Presscolar" size="50" ></td><td></td></tr>
+						<tr><td>Semestre Actual</td><td><input type="number" name="semestre" placeholder="Ejemplo: 2"></td><td></td></tr>						
+						<tr><td>¿Tiene Beca?</td><td><input type="radio" id="rN"  onclick="$(\'#nB\').hide()" value="0" checked name="beca" ><label for="rN">No</label><br><input type="radio" onclick="$(\'#nB\').show()" name="beca" id="rS" value="1"><label for="rS">Si</lable></td><td></td></tr>
+						<tr id="nB" style="display:none"><td>Nombre de la beca</td><td><input type="text" name="nombreBeca" /></td><td></td></tr>
+						<tr><td>Fecha de Termino</td><td><input type="date" name="term" ></td><td></td></tr>
+						<tr><td>Dictamen de Titulacion</td><td><input type="text" name="dict" placeholder="Ejemplo:En trámite de Titulación" size="50 "></td><td></td></tr>
+						<tr><td>Notas</td><td><textarea rows="4" cols="50" name="notas"></textarea></td><td></td></tr>
+					</table>					
+					<img src="imagenes/user.gif" style="cursor:pointer;position:fixed;top:150px;right:3%;border-radius:4px;border:2px solid grey;width:15%" onclick="$(this).next().next().trigger(\'click\')"/><br/>
+					<input type="file" nombre="archivo" accept=".jpg, .gif, .png" style="display:none;"/>					
+					<center><button>ENVIAR</button></center>
+				</form>
+			</div>
+			<div id="modificarA" style="display:none;" class="tabCont">
+				<h2>Modificar Datos de Alumnos</h2>
+					<div  style="padding:8px;position:absolute;top:-20px;right:0;" class="buscar">
+						<input type="search" autofocus padre="alumnos.php" hijo="modAl" placeholder="Buscar por nombre">
+						<img src="imagenes/search.png" onclick="$(this).prev().trigger(\'search\')">
+					</div>
+					<div id="modAl" style="padding-bottom:20px;">';
+						$num_reg=10;
+						if(isset($_POST['number'])){
+							$pagiM= ($_POST['number']-1)*$num_reg;
+							$PagAct=$_POST['number'];
+
+						}
+						else{
+							$pagiM=0;
+							$PagAct=1;
+						}				
+						$alum = 0;
+						if(isset($_POST['busqueda'])){
+							$sql = "SELECT * FROM Alumnos WHERE status=1 AND nombre LIKE '%".$_POST['busqueda']."%' OR apellidoP LIKE '%".$_POST['busqueda']."%' OR apellidoM LIKE '%".$_POST['busqueda']."%' OR matricula='".$_POST['busqueda']."' ";
+							$sqli =" SELECT * FROM Alumnos WHERE status=1 AND nombre LIKE '%".$_POST['busqueda']."%' OR apellidoP LIKE '%".$_POST['busqueda']."%' OR apellidoM LIKE '%".$_POST['busqueda']."%'  OR matricula='".$_POST['busqueda']."' LIMIT ".$pagiM.",".$num_reg." ";
+						}	
+						else{
+							$sql = "SELECT * FROM Alumnos WHERE status=1";
+							$sqli = "SELECT * FROM Alumnos WHERE status=1 ORDER BY nombre LIMIT ".$pagiM.",".$num_reg." ";
+						}
+
+						$alumnos = mysqli_query($conexion,$sql);
+						$numPers = mysqli_num_rows($alumnos);					
+						$alumnos2 = mysqli_query($conexion,$sqli);
+						$num_result = mysqli_num_rows($alumnos2);
+						$PagUlt=floor(($numPers/$num_reg)+1);
+
+						while($alum < $num_result){
+							$datosAl = @mysqli_fetch_array($alumnos2);
+							if(file_exists("imagenes/alumnos/".$datosAl["id_alumno"].".png")){
+								$imagenTmp1=$datosAl["id_alumno"].'.png';
+							}
+							else{
+								if(file_exists("imagenes/alumnos/".$datosAl["id_alumno"].".jpg")){
+									$imagenTmp1=$datosAl["id_alumno"].'.jpg';
+								}
+								else{
+									if(file_exists("imagenes/alumnos/".$datosAl["id_alumno"].".gif")){
+										$imagenTmp1=$datosAl["id_alumno"].'.gif';
+									}
+									else {
+										if(file_exists("imagenes/alumnos/".$datosAl["id_alumno"].".svg")){
+											$imagenTmp1=$datosAl["id_alumno"].'.svg';
+										}
+										else {
+											$imagenTmp1="disable.gif";
+										}
+									}
+								}
+							}
+							$fecha= $datosAl["fecha_nacimiento"];
+							$edad = CalculaEdad($fecha);
+
+							echo'<div nombre="'.strtolower($datosAl["nombre"]).'"  tipo="fila" style="position:relative;width:95%;padding:10px;border:1px solid rgba(0,0,0,0.2);">
+									<b>'.$datosAl['apellidoP']." ".$datosAl['apellidoM']." ".$datosAl["nombre"].'</b>
+									<img class="edit" src="imagenes/edit.png" style="padding:4px; top:5px; position:absolute;right:3%;" onclick="$(\'#\'+\''.$datosAl["id_alumno"].'\').toggle(\'drop\');">
+									<img src="imagenes/bin.png" style="padding:4px; top:5px; position:absolute;right:0;" onclick="$(this).next().toggle(\'drop\');" permiso="D">
+									<div style="display:none;">
+										<form class="borrar" destino="resultadoRegistro" action="accionesAlumno.php"style="display:inline-block" >
+											<input type="hidden" value="borrar" name="option">
+											<input type="hidden" value="'.$datosAl["id_alumno"].'" name="alumno" >									
+												<label>Estas Seguro que deseas deshabilitar a este alumno@ '.$datosAl["nombre"].'"</label>
+												<button>Si,estoy seguro</button>																		
+										</form>
+										<button style="display:inline-block" onclick="return false,$(this).parent().toggle(\'drop\')">No</button>	
+									</div>
+									<form  id="'.$datosAl["id_alumno"].'" destino="resultadoRegistro" action="accionesAlumno.php" method="post" style="display:none" >
+										<input type="hidden" name="option" value="modificar">
+										<input type="hidden" name="id" value="'.$datosAl["id_alumno"].'">
+										<table class="modifi" >
+
+											<tr><td>Apellido Paterno</td><td><input type="text" name="apP" value="'.$datosAl["apellidoP"].'" size="25" required title="Este campo no puede quedar vacio" autofocus></td><td></td></tr>
+											<tr><td>Apellido Materno</td><td><input type="text" name="apM" value="'.$datosAl["apellidoM"].'" size="25" required title="Este campo no puede quedar vacio" autofocus></td><td></td></tr></td><td></td></tr>
+											<tr><td>Nombre</td><td><input type="text" name="nombre" name="nombre" value="'.$datosAl["nombre"].'" size="25" required title="Este campo no puede quedar vacio" autofocus></td><td></td></tr>
+											<tr><td> Matricula</td><td><input type="text" value="'.$datosAl["matricula"].'" size="25" name="matricula"></td><td><td></tr>';
+											if($datosAl["sexo"]=="H"){
+												echo'<tr><td>Sexo</td><td> <input type="radio" id="sexRPH" value="H" name="sexo" checked><label for="sexRPH">Hombre</label><br><input type="radio" id="sexRPM" name="sexo" value="M"><label for="sexRPM">Mujer</label></td><td></td></tr>';
+											}
+											else{
+												echo'<tr><td>Sexo</td><td> <input type="radio" id="sexRPH" value="H" name="sexo" ><label for="sexRPH">Hombre</label><br><input type="radio" id="sexRPM" name="sexo" value="M" checked><label for="sexRPM">Mujer</label></td><td></td></tr>';
+											}
+
+											echo'<tr><td>Curp</td><td><input type="text" value="'.$datosAl["curp"].'" name="curp" size="25" pattern="[A-Z0-9]{18}" title="Debe de tener una longitud de 18 digitos"></td></td></td></tr>
+											<tr><td>Fecha de Nacimiento</td><td><input type="date" name="fechaN" value="'.$datosAl["fecha_nacimiento"].'"></td><td>Edad: <input type="text" value="'.$edad.'" readonly/></td></tr>
+											<tr><td>Telefono de Casa</td><td><input type="text" name="telCasa" value="'.$datosAl["tel_casa"].'"></td><td></td></tr>
+											<tr><td>Telefono Celular</td><td><input type="text" name="telCel" value="'.$datosAl["tel_celular"].'"></td><td></td></tr>
+											<tr><td>Email </td><td><input type="email" value="'.$datosAl["email"].'" name="email" size="30" title="Debe ser un email real"></td><td></td></tr>
+											<tr><td>Domicilio</td><td><input type="text" name="dom" value="'.$datosAl["calle_local"].'"></td><td></td></tr>
+											<tr><td>Numero Exterior</td><td><input type="text" name="NumExt" value="'.$datosAl["num_ext_local"].'"></td><td></td></tr>
+											<tr><td>Numero Interior</td><td><input type="text" name="NumInt" value="'.$datosAl["num_int_local"].'"></td><td></td></tr>
+											<tr><td>Colonia</td><td><input type="text" name="colonia" value="'.$datosAl["colonia_local"].'" ></td><td></td></tr>
+											<tr><td>Municipio</td><td><input type="text" name="municipio" value="'.$datosAl["municipio_local"].'"></td><td></td></tr>
+											<tr><td>Codigo Postal</td><td><input type="text" name="cp" value="'.$datosAl["cp_local"].'"></td><td></td></tr>
+											<tr><td>Estado</td>
+												<td>
+													<select name="state" id="state'.$datosAl['id_alumno'].'">
+														<option value="Aguascalientes">Aguascalientes</option>
+														<option value="Baja California">Baja California</option>
+														<option value="Baja California Sur">Baja California Sur</option>
+														<option value="Campeche">Campeche</option>
+														<option value="Chiapas">Chiapas</option>
+														<option value="Chihuahua">Chihuahua</option>
+														<option value="Coahuila">Coahuila</option>
+														<option value="Colima">Colima</option>
+														<option value="Distrito Federal">Distrito Federal</option>
+														<option value="Durango">Durango</option>
+														<option value="Estado de México">Estado de México</option>
+														<option value="Guanajuato">Guanajuato</option>
+														<option value="Guerrero">Guerrero</option>
+														<option value="Hidalgo">Hidalgo</option>
+														<option value="Jalisco">Jalisco</option>
+														<option value="Michoacán">Michoacán</option>
+														<option value="Morelos">Morelos</option>
+														<option value="Nayarit">Nayarit</option>
+														<option value="Nuevo León">Nuevo León</option>
+														<option value="Oaxaca">Oaxaca</option>
+														<option value="Puebla">Puebla</option>
+														<option value="Querétaro">Querétaro</option>
+														<option value="Quintana Roo">Quintana Roo</option>
+														<option value="San Luis Potosí">San Luis Potosí</option>
+														<option value="Sinaloa">Sinaloa</option>
+														<option value="Sonora">Sonora</option>
+														<option value="Tabasco">Tabasco</option>
+														<option value="Tamaulipas">Tamaulipas</option>
+														<option value="Tlaxcala">Tlaxcala</option>
+														<option value="Veracruz">Veracruz</option>
+														<option value="Yucatán">Yucatán</option>
+														<option value="Zacatecas">Zacatecas</option>
+													</select>
+													<script>
+														var opciones = $("#state'.$datosAl['id_alumno'].'").find("option");
+														opciones.each(function(){
+															if($(this).val()=="'.$datosAl['estado_local'].'"){
+																$(this).prop("selected",true);
+																return false;
+															}
+														});
+													</script>
+												</td><td></td>
+											</tr>
+											<tr><td>¿Vive Fuera?</td><td>';
+											if($datosAl["calle_foranea"]==""){
+												echo'<input onclick="$(\'.\'+\''.$datosAl["id_alumno"].'\').hide()" type="radio" id="rFoN" value="N" name="foraneo" checked><label for="rFoN">No</label><br>
+												<input onclick="$(\'.\'+\''.$datosAl["id_alumno"].'\').show()" type="radio" id="rFoS" value="S" name="foraneo"><label for="rFoS">Si</label>';											
+											}
+											else{
+												echo'
+												<script> 
+													$(\'.\'+\''.$datosAl["id_alumno"].'\').show();
+												</script>';
+											}
+											echo'</td><td></td></tr>	
+											<tr class="'.$datosAl["id_alumno"].'" style="display:none;"><td >Domicilio</td><td><input type="text" name="calleF" value="'.$datosAl["calle_foranea"].'" size="30"></td><td></td></tr>
+											<tr class="'.$datosAl["id_alumno"].'" style="display:none;"><td>Numero Exterior</td><td><input type="text" name="NumExtF" value="'.$datosAl["num_ext_foranea"].'"></td><td></td></tr>
+											<tr class="'.$datosAl["id_alumno"].'" style="display:none;"><td  >Numero Interior</td><td ><input type="text" name="NumIntF"value="'.$datosAl["num_int_foranea"].'"></td><td></td></tr>
+											<tr class="'.$datosAl["id_alumno"].'" style="display:none;"><td >Colonia</td><td ><input type="text" name="coloniaF"value="'.$datosAl["colonia_foranea"].'" ></td><td></td></tr>
+											<tr class="'.$datosAl["id_alumno"].'" style="display:none;"><td>Municipio</td><td ><input type="text" name="municipioF" value="'.$datosAl["municipio_foranea"].'"></td><td></td></tr>
+											<tr class="'.$datosAl["id_alumno"].'" style="display:none;" ><td>Codigo Postal</td><td><input type="text" name="cpF" value="'.$datosAl["cp_foranea"].'" ></td><td></td></tr>
+											<tr class="'.$datosAl["id_alumno"].'" style="display:none;"> <td>Estado</td><td><input type="text" name="estadoF" value="'.$datosAl["estado_foranea"].'"></td><td></td></tr>';
+											if($datosAl["tutor"]==""){
+												echo'<tr><td>¿Tiene tutor?</td><td >
+												<input onclick="$(\'.\'+\''.$datosAl["id_alumno"].'\').hide() " type="radio" id="TN" value="N" name="tutor" checked><label for="TN">No</label><br>
+												<input onclick="$(\'.\'+\''.$datosAl["id_alumno"].'\').show()" type="radio" name="tutor" id="TS" value="S"><label for="TS">Si</label>';
+											}
+											else{
+												echo'
+												<script> 
+													$(\'.\'+\''.$datosAl["id_alumno"].'\').show();
+												</script>
+												';
+											}
+											echo'</td><td></td></tr>
+											<tr class="'.$datosAl["id_alumno"].'" style="display:none;"><td>Nombre del Tutor</td><td><input type="text" name="tutor" value="'.$datosAl["tutor"].'"></td><td></td></tr>
+											<tr class="'.$datosAl["id_alumno"].'" style="display:none;"><td>Domicilio del Tutor</td><td><input type="text" name="domTu" value="'.$datosAl["domicilio_tutor"].'"></td><td></td></tr>
+											<tr><td>Nombre del Padre</td><td><input type="text" name="padre" value="'.$datosAl["padre"].'"></td><td></td></tr>
+											<tr><td>Domicilio del Padre</td><td><input type="text" name="DomPa" value="'.$datosAl["dom_padre"].'"></td><td></td></tr>
+											<tr><td>Nombre del Madre</td><td><input type="text" name="madre" value="'.$datosAl["madre"].'"></td><td></td></tr>
+											<tr><td>Domicilio del Madre</td><td><input type="text" name="DomMa" value="'.$datosAl["dom_madre"].'"></td><td></td></tr>
+											<tr><td>En caso de emergencia llamar a </td><td><input type="text" name="emerg" value="'.$datosAl["nombre_emergecia"].'"></td><td></td></tr>
+											<tr><td>Domicilio de Emergencia</td><td><input type="text" name="domEme" value="'.$datosAl["domicilio_emergencia"].'"></td><td></td></tr>
+											<tr><td>Telefono de Emergencia</td><td><input type="text" name="telEme" value="'.$datosAl["tel_emergencia"].'"></td><td></td></tr>
+											<tr><td>Tipo de Sangre</td><td><input type="text" name="tipSan" value="'.$datosAl["tipo_sangre"].'"></td><td></td></tr>
+											<tr><td>Bachillerato </td><td><input type="text" name="bachi" value="'.$datosAl["bachillerato"].'"></td><td></td></tr>
+											<tr><td>Fecha de Ingreso</td><td><input type="date" name="inside" value="'.$datosAl["fecha_ingreso"].'"></td><td></td></tr>
+											<tr><td>Carrera </td><td><input type="text" name="carrera" value="'.$datosAl["carrera"].'" size="25" ></td><td></td></tr>
+											<tr><td>Semestre Actual</td><td><input type="number" name="semestre" value="'.$datosAl["semestre"].'"></td><td></td></tr>';		
+											if($datosAl["beca"]=="0"){
+												echo '<tr><td>¿Tiene Beca?</td><td><input type="radio" id="rN"  onclick="$(\'#nB'.$datosAl['id_alumno'].'\').hide()" value="0" checked name="beca" ><label for="rN">No</label><br><input type="radio" onclick="$(\'#nB'.$datosAl['id_alumno'].'\').show()" name="beca" id="rS" value="1"><label for="rS">Si</lable></td><td></td></tr>';
+											}
+											else{
+												echo '<tr style="display:none"><td>¿Tiene Beca?</td><td><input type="radio" id="rN"  onclick="$(\'#nB'.$datosAl['id_alumno'].'\').hide()" value="0" checked name="beca" ><label for="rN">No</label><br><input type="radio" onclick="$(\'#nB'.$datosAl['id_alumno'].'\').show()" name="beca" id="rS" value="1"><label for="rS">Si</lable></td><td></td></tr>';
+												echo'
+												<script>
+													$("#nB'.$datosAl['id_alumno'].'").show();
+												</script>
+												';
+											}
+											echo'
+											<tr id="nB'.$datosAl['id_alumno'].'" style="display:none"><td>Nombre de la beca</td><td><input type="text" name="nombreBeca" value="'.$datosAl['nombreBeca'].'" /></td><td></td></tr>
+											<tr><td>Fecha de Termino</td><td><input type="date" name="term" value="'.$datosAl["fecha_termino"].'"></td><td></td></tr>
+											<tr><td>Dictamen de Titulacion</td><td><input type="text" name="dict" value="'.$datosAl["dictamen_titulacion"].'" size="50 "></td><td></td></tr>';
+											
+											echo'<tr><td>Notas</td><td><textarea rows="4" cols="40" name="notas" value="'.$datosAl["notas"].'"></textarea></td><td></td></tr>
+										</table>
+										<img src="imagenes/alumnos/'.$imagenTmp1.'" style="position:absolute;top:50px;right:85px;width:25%;border:2px solid grey;border-radius:5px" onclick="$(this).next().next().trigger(\'click\')"/><br/>
+										<input type="file" nombre="archivo" accept=".jpg, .gif, .png" style="display:none;"/>
+										<center><button onclick="$(".subBoton").trigger("click")" >EDITAR</button></center>									
+									</form>
+								</div>';		
+								$alum++;
+							
+						}
+						$PagAnt=$PagAct-1;
+		 				$PagSig=$PagAct+1;
+		 				
+		 				if($PagAct>1 && $PagAct<$PagUlt ){
+		 						echo 
+								'<button style="position:relative; top:25%; left:85%;" onclick=" atrasar('.$PagAnt.',\'alumnos.php\',\'modAl\')"> << </button> 
+								 <button style="position:relative; top:25%; left:90%;" onclick="adelantar('.$PagSig.',\'alumnos.php\',\'modAl\')"> >> </button>';
+							
+												
+						}
+						if($PagAct<$PagUlt){
+							
+								echo  '<button style="position:relative; top:25%; left:90%;" onclick="adelantar('.$PagSig.',\'alumnos.php\',\'modAl\')"> >> </button>';
+							
+							
+						}
+						if($PagAct==$PagUlt &&$PagAct!=1){
+							echo '<button style="position:relative; top:25%; left:85%;" onclick=" atrasar('.$PagAnt.',\'alumnos.php\',\'modAl\')"> << </button>';
+						}				
+					echo'
+					</div>';
+						mysqli_free_result($alumnos);
+						mysqli_free_result($alumnos2);
+				echo'	
+				</div>
+				
+				<div id="reinscripcion" class="tabCont" style="display:none" permiso="M">
+					<h2>Reinscripciones</h2>
+					<div id="reinscripcion" style="position:relative;width:95%;padding:10px;border:1px solid rgba(0,0,0,0.2);">					
+						<form action="accionesAlumno.php" destino="reinscripcion">
+							<input type="hidden" name="option" value="registroAl">
+							Matricula 
+							<input id="matricula" type="text" name="matricula"> <button>Buscar</button>
+
+						</form>					
+					</div>
+					<div style="height:20px;width:95%;padding-left:20px;"></div>
+				</div>
+
+				 <div id="restaurarA" style="display:none;" class="tabCont" permiso="M">
+					<h2>Modificar Datos de Alumnos</h2>
+						<div  style="padding:8px;position:absolute;top:-20px;right:0;" class="buscar">
+							<input type="search" autofocus padre="modificarA" placeholder="Buscar por nombre">
+							<img src="imagenes/search.png" onclick="$(this).prev().trigger(\'search\')">
+						</div>';
+					$personal = mysqli_query($conexion, "SELECT * FROM Alumnos WHERE status=0");
+					$numPers = mysqli_num_rows($personal);
+					$pers = 0;				
+					while($pers < $numPers) {
+						$datosA = mysqli_fetch_assoc($personal);
+						echo'
+						<div nombre="'.strtolower($datosA["nombre"]).'" tipo="fila" style="position:relative;width:95%;padding:10px;border:1px solid rgba(0,0,0,0.2);border-top:none">
+							<b>'.$datosA["nombre"].'</b>							
+							<div id="resPer'.$datosA["id_alumno"].'" style="display:none">
+								<form destino="resultadoRegistro" action="accionesAlumno.php" style="display:inline-block">
+										<input type="hidden" name="option" value="restaurar">
+										<input type="hidden" name="id_alumno" value="'.$datosA["id_alumno"].'">
+										<br>¿Estas seguro que deseas restaurar a esta persona <b>'.$datosA["nombre"].'</b>?
+										<button >Si, estoy seguro</button>									
+								</form>
+								<button style="display:inline-block" onclick="$(this).parent().toggle(\'drop\')">No</button>
+							</div>
+							<img src="imagenes/checkmark.png" style="position:absolute;top:4px;right:4px;cursor:pointer" onclick="$(\'#resPer'.$datosA["id_alumno"].'\').toggle(\'drop\')">
+						</div>';
+					$pers++;	
+					}
+			echo'</div>
+			<div id="documentosAl" style="display:none;" class="tabCont" permiso="M">
+				<h2>Documentos Digitales</h2>
+				<div style="padding:8px;position:absolute;top:-20px;right:0;" class="buscar">
+					<input type="search" autofocus padre="alumnos.php" hijo="docs" placeholder="Buscar por nombre">
+					<img src="imagenes/search.png" onclick="$(this).prev().trigger(\'search\')">
+				</div>
+				<div id="docs">';
+					$num_reg=10;
+						if(isset($_POST['number'])){
+							$pagiM= ($_POST['number']-1)*$num_reg;
+							$PagAct=$_POST['number'];
+
+						}
+						else{
+							$pagiM=0;
+							$PagAct=1;
+						}				
+						$alum = 0;
+						if(isset($_POST['busqueda'])){
+							$sql = "SELECT * FROM Alumnos WHERE status=1 AND nombre LIKE '%".$_POST['busqueda']."%' OR apellidoP LIKE '%".$_POST['busqueda']."%' OR apellidoM LIKE '%".$_POST['busqueda']."%'";
+							$sqli =" SELECT * FROM Alumnos WHERE status=1 AND nombre LIKE '%".$_POST['busqueda']."%' OR apellidoP LIKE '%".$_POST['busqueda']."%' OR apellidoM LIKE '%".$_POST['busqueda']."%' LIMIT ".$pagiM.",".$num_reg." ";
+						}	
+						else{
+							$sql = "SELECT * FROM Alumnos WHERE status=1";
+							$sqli = "SELECT * FROM Alumnos WHERE status=1 ORDER BY nombre LIMIT ".$pagiM.",".$num_reg." ";
+						}
+
+						$alumnos = mysqli_query($conexion,$sql);
+						$numPers = mysqli_num_rows($alumnos);					
+						$alumnos2 = mysqli_query($conexion,$sqli);
+						$num_result = mysqli_num_rows($alumnos2);
+						$PagUlt=floor(($numPers/$num_reg)+1);
+
+						while($alum < $num_result){
+							$datosAl= mysqli_fetch_array($alumnos2);
+							echo'
+							<div tipo="fila" style="position:relative;width:95%;padding:10px;border:1px solid rgba(0,0,0,0.2);">
+							<b>'.$datosAl["apellidoP"]." ".$datosAl["apellidoM"]." ".$datosAl["nombre"].'</b>
+								<div id="docsAL'.$datosAl["id_alumno"].'" style="display:none">
+									<table>
+										<tr>
+											<td>Acta de Nacimiento</td>
+											<td>';
+												if(file_exists("documentacion/alumnos/".$datosAl['id_alumno']."/ActaNaci".$datosAl['id_alumno'].".pdf")){
+													echo '<img src="imagenes/checkmark.png">';
+												}
+												else{
+													if(file_exists("documentacion/docentes/".$datosAl['id_alumno']."/ActaNaci".$datosAl['id_alumno'].".jpg")){
+														echo '<img src="imagenes/checkmark.png">';
+													}
+													else{
+														echo '<img src="imagenes/delete.png">';
+													}
+												}
+											echo'
+											</td>
+											<td>
+												<form destino="resultadoRegistro" action="accionesAlumno.php" >
+													<input type="hidden" name="option" value="guardarDoc"/>
+													<input type="hidden" name="id" value="'.$datosAl["id_alumno"].'">													
+       												<input type="hidden" name="nombre" value="ActaNaci'.$datosAl['id_alumno'].'"/>
+													<img src="imagenes/edit.png" onclick="$(this).next().next().next().trigger(\'click\');" >
+													<span></span>
+													<span></span>
+													<input type="file"nombre="doc" accept=".pdf,.jpg" style="display:none" onclick="$(this).next().toggle()" />
+													<button style="position:absolute; top:82%; left:43%; display:none;" onclick="$(this).hide();">Guardar</button>
+												</form>
+											</td>
+											<td>';
+												if(file_exists("documentacion/alumnos/".$datosAl['id_alumno']."/ActaNaci".$datosAl['id_alumno'].".pdf")){
+													echo '<a href="documentacion/alumnos/'.$datosAl['id_alumno'].'/ActaNaci'.$datosAl['id_alumno'].'.pdf "  download="Acta_de_Nacimiento_'.$datosAl['nombre'].'.pdf"><img src="imagenes/cloud_download.png"/></a>';
+												}
+												else{
+													if(file_exists("documentacion/docentes/".$datosAl['id_alumno']."/ActaNaci".$datosAl['id_alumno'].".jpg")){
+														echo '<a href="documentacion/alumnos/'.$datosAl['id_alumno'].'/ActaNaci'.$datosAl['id_alumno'].'.jpg "  download="Acta_de_Nacimiento_'.$datosAl['nombre'].'.jpg"><img src="imagenes/cloud_download.png"/></a>';
+													}
+												}
+												
+											echo'
+											</td>	
+										</tr>
+										<tr>
+											<td>Curp</td>
+											<td>';
+												if(file_exists("documentacion/alumnos/".$datosAl['id_alumno']."/Curp".$datosAl['id_alumno'].".pdf")){
+													echo '<img src="imagenes/checkmark.png">';
+												}
+												else{
+													if(file_exists("documentacion/docentes/".$datosAl['id_alumno']."/Curp".$datosAl['id_alumno'].".jpg")){
+														echo '<img src="imagenes/checkmark.png">';
+													}
+													else{
+														echo '<img src="imagenes/delete.png">';
+													}
+												}
+											echo'
+											</td>
+											<td>
+												<form destino="resultadoRegistro" action="accionesAlumno.php" >
+													<input type="hidden" name="option" value="guardarDoc"/>
+													<input type="hidden" name="id" value="'.$datosAl["id_alumno"].'">													
+       												<input type="hidden" name="nombre" value="Curp'.$datosAl['id_alumno'].'"/>
+													<img src="imagenes/edit.png" onclick="$(this).next().next().next().trigger(\'click\');" >
+													<span></span>
+													<span></span>
+													<input type="file" nombre="doc" accept=".pdf,.jpg" style="display:none" onclick="$(this).next().toggle()" />
+													<button style="position:absolute; top:82%; left:43%; display:none;" onclick="$(this).hide();">Guardar</button>
+												</form>
+											</td>
+											<td>';
+
+												if(file_exists("documentacion/alumnos/".$datosAl['id_alumno']."/Curp".$datosAl['id_alumno'].".pdf")){
+													echo '<a href="documentacion/alumnos/'.$datosAl['id_alumno'].'/Curp'.$datosAl['id_alumno'].'.pdf "  download="Curp'.$datosAl['nombre'].'.pdf"><img src="imagenes/cloud_download.png"/></a>';
+												}
+												else{
+													if(file_exists("documentacion/docentes/".$datosAl['id_alumno']."/Curp".$datosAl['id_alumno'].".jpg")){
+														echo '<a href="documentacion/docentes/'.$datosAl['id_alumno'].'/Curp'.$datosAl['id_alumno'].'.jpg "  download="Curp'.$datosAl['nombre'].'.jpg"><img src="imagenes/cloud_download.png"/></a>';
+													}
+												}
+
+											echo'
+											</td>	
+										</tr>
+										<tr>
+											<td>Certificado Medico</td>
+											<td>';
+												if(file_exists("documentacion/alumnos/".$datosAl['id_alumno']."/CertiMedic".$datosAl['id_alumno'].".pdf")){
+													echo '<img src="imagenes/checkmark.png">';
+												}
+												else{
+													if(file_exists("documentacion/docentes/".$datosAl['id_alumno']."/CertiMedic".$datosAl['id_alumno'].".jpg")){
+														echo '<img src="imagenes/checkmark.png">';
+													}
+													else{
+														echo '<img src="imagenes/delete.png">';
+													}
+												}
+											echo'
+											</td>
+											<td>
+												<form destino="resultadoRegistro" action="accionesAlumno.php" >
+													<input type="hidden" name="option" value="guardarDoc"/>
+													<input type="hidden" name="id" value="'.$datosAl["id_alumno"].'">													
+       												<input type="hidden" name="nombre" value="CertiMedic'.$datosAl['id_alumno'].'"/>
+													<img src="imagenes/edit.png" onclick="$(this).next().next().next().trigger(\'click\');" >
+													<span></span>
+													<span></span>
+													<input type="file"nombre="doc" accept=".pdf,.jpg" style="display:none" onclick="$(this).next().toggle()" />
+													<button style="position:absolute; top:82%; left:43%; display:none;" onclick="$(this).hide();">Guardar</button>
+												</form>
+											</td>
+											<td>';
+												if(file_exists("documentacion/alumnos/".$datosAl['id_alumno']."/CertiMedic".$datosAl['id_alumno'].".pdf")){
+													echo '<a href="documentacion/docentes/'.$datosAl['id_alumno'].'/CertiMedic'.$datosAl['id_alumno'].'.jpg "  download="CertiMedic'.$datosAl['nombre'].'.pdf"><img src="imagenes/cloud_download.png"/></a>';
+												}
+												else{
+													if(file_exists("documentacion/docentes/".$datosAl['id_alumno']."/CertiMedic".$datosAl['id_alumno'].".jpg")){
+														echo '<a href="documentacion/docentes/'.$datosAl['id_alumno'].'/CertiMedic'.$datosAl['id_alumno'].'.jpg "  download="CertiMedic'.$datosAl['nombre'].'.jpg"><img src="imagenes/cloud_download.png"/></a>';
+													}
+												}
+											echo'
+											</td>	
+										</tr>
+										<tr>
+											<td>Carta de Buena Conducta</td>
+											<td>';
+												if(file_exists("documentacion/alumnos/".$datosAl['id_alumno']."/Conducta".$datosAl['id_alumno'].".pdf")){
+													echo '<img src="imagenes/checkmark.png">';
+												}
+												else{
+													if(file_exists("documentacion/docentes/".$datosAl['id_alumno']."/Conducta".$datosAl['id_alumno'].".jpg")){
+														echo '<img src="imagenes/checkmark.png">';
+													}
+													else{
+														echo '<img src="imagenes/delete.png">';
+													}
+												}
+											echo'
+											</td>
+											<td>
+												<form destino="resultadoRegistro" action="accionesAlumno.php" >
+													<input type="hidden" name="option" value="guardarDoc"/>
+													<input type="hidden" name="id" value="'.$datosAl["id_alumno"].'">													
+       												<input type="hidden" name="nombre" value="Conducta'.$datosAl['id_alumno'].'"/>
+													<img src="imagenes/edit.png" onclick="$(this).next().next().next().trigger(\'click\');" >
+													<span></span>
+													<span></span>
+													<input type="file"nombre="doc" accept=".pdf,.jpg" style="display:none" onclick="$(this).next().toggle()" />
+													<button style="position:absolute; top:82%; left:43%; display:none;" onclick="$(this).hide();">Guardar</button>
+												</form>
+											</td>
+											<td>';
+												if(file_exists("documentacion/alumnos/".$datosAl['id_alumno']."/Conducta".$datosAl['id_alumno'].".pdf")){
+													echo '<a href="documentacion/docentes/'.$datosAl['id_alumno'].'/Conducta'.$datosAl['id_alumno'].'.jpg "  download="Conducta'.$datosAl['nombre'].'.pdf"><img src="imagenes/cloud_download.png"/></a>';
+												}
+												else{
+													if(file_exists("documentacion/docentes/".$datosAl['id_alumno']."/Conducta".$datosAl['id_alumno'].".jpg")){
+														echo '<a href="documentacion/docentes/'.$datosAl['id_alumno'].'/Conducta'.$datosAl['id_alumno'].'.jpg "  download="Conducta'.$datosAl['nombre'].'.jpg"><img src="imagenes/cloud_download.png"/></a>';
+													}
+												}
+											echo'
+											</td>	
+										</tr>				
+									</table>
+								</div>
+								<img src="imagenes/folder.png" style="position:absolute;top:4px;right:4px;cursor:pointer" onclick="$(\'#docsAL'.$datosAl["id_alumno"].'\').toggle(\'drop\')">
+							</div>
+							';
+							$alum++;
+						}
+						$PagAnt=$PagAct-1;
+						$PagSig=$PagAct+1;
+						if($PagAct>1 && $PagAct<$PagUlt ){
+							echo'
+							<button style="position:relative; top:25%; left:85%;" onclick=" atrasar('.$PagAnt.',\'alumnos.php\',\'docs\')"> << </button> 
+							<button style="position:relative; top:25%; left:90%;" onclick="adelantar('.$PagSig.',\'alumnos.php\',\'docs\')"> >> </button>';
+						}
+						if($PagAct<$PagUlt){
+							echo'
+							<button style="position:relative; top:25%; left:90%;" onclick="adelantar('.$PagSig.',\'alumnos.php\',\'docs\')"> >> </button>';
+						}
+						if($PagAct==$PagUlt &&$PagAct!=1){
+							echo'
+							<button style="position:relative; top:25%; left:85%;" onclick=" atrasar('.$PagAnt.',\'alumnos.php\',\'docs\')"> << </button>';
+						}
+						mysqli_free_result($alumnos);
+						mysqli_free_result($alumnos2);
+			echo'
+				</div>			
+			</div> 	
+		</div>
+	</div>';
+	echo substr($_SESSION["Permisos_Eneaware"][10],0,1);
+	if(substr($_SESSION["Permisos_Eneaware"][10],0,1)=="0"){
+		echo "<script>$('#principalInner [permiso=A]').remove()</script>";
+	}
+	if(substr($_SESSION["Permisos_Eneaware"][10],1,1)=="0"){
+		echo "<script>$('#principalInner [permiso=D]').remove()</script>";
+	}
+	if(substr($_SESSION["Permisos_Eneaware"][10],2,1)=="0"){
+		echo "
+			<script>
+				$('#principalInner form[permiso=M] input').prop('disabled', true);
+				$('#principalInner form[permiso=M] select').prop('disabled', true);
+				$('#principalInner form[permiso=M] button').remove();
+			</script>";
+	}
+	
+	function CalculaEdad( $fecha ) {
+    	list($Y,$m,$d) = explode("-",$fecha);
+    	return( date("md") < $m.$d ? date("Y")-$Y-1 : date("Y")-$Y );
+	}
+
+	mysqli_close($conexion);
+
+?>
