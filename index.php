@@ -54,7 +54,7 @@ session_start();
 						<table style="width:100%;">
 							<tr>
 								<td style="width:100px;padding-left:30px">Usuario</td>
-								<td><input type="text" placeholder="usuario" name="usuario"></td>
+								<td><input type="text" placeholder="usuari" name="usuario"></td>
 							</tr>
 							<tr>
 								<td style="width:100px;padding-left:30px">Contraseña</td>
