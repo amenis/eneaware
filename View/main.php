@@ -32,7 +32,7 @@
         </nav>
         <aside class="sidebar-menu">
             <div id="id-user">
-                <img src="http://delpad.com/template/bitrix/img/default-user.png" alt="user image" style="border-radius:5px" width="56" height="60"/>
+                <img src="../imagenes/user.gif" alt="user image" style="border-radius:80px" width="80" height="80"/>
                 <span style="color:white"><?php echo $_SESSION['Nombre_Usuario_Eneaware'];?></span>
             </div>
             <div id="menu">

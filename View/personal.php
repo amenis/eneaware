@@ -5,49 +5,8 @@
 ?>
 
 
-
-	<script>
-
-		var cont=0;
-		function agregar(destino,id){
-			$("#"+destino).append('<tr><td colspan="3" style="border-bottom:1px solid gray;padding-bottom:15px;"></td><td></td><td></td></tr>'+
-								'<tr  ><td>Escuela: </td><td><input type="text" placeholder="Ejemplo: ENEA" name="escuela'+(cont+1)+'" size="40"></td><td></td></tr>'+
-								'<tr  ><td>Carrera</td><td><input type="text" placeholder="Educacion Infantil" name="carrera'+(cont+1)+'" size="40"></td><td></td></tr>'+
-								'<tr  ><td>Cedula Profesional</td><td><input type="text" placeholder="6783192" size="40" name="cedula'+(cont+1)+'"></td><td></td></tr>'+
-								'<tr  ><td>Acta de examen: </td><td><input type="text" placeholder="Ejemplo: MAESTRIA 02 0121" name="actaEx'+(cont+1)+'" size="40"></td><td></td></tr>'+
-								'<tr  ><td>Fecha de titulación: </td><td><input type="date" name="fechaTi'+(cont+1)+'"></td><td></td></tr>'+
-								'<tr  ><td>Tema de titulacion: </td><td><input type="text" placeholder="Ejemplo: Programación cognitiva" name="temaTi'+(cont+1)+'" size="45"></td><td></td></tr>'+
-								'<tr  id="'+(cont+1)+'"><td>Agregar</td><td><button onclick="agregar(\''+destino+'\',\'\');return false;">Agregar</button></td><td></td></tr>');
-			$("#nuevos_reg"+id).attr("value",''+(cont+1)+'');
-			cont++;
-			if(cont==2){
-				
-				$("#"+destino+" tr:last").remove();
-				cont=0;
-			}
-			return false;
-		}
-		function agregarExi(destino,cant,id){
-			cont=cant;
-			$("#"+destino).append('<tr><td colspan="3" style="border-bottom:1px solid gray;padding-bottom:15px;"></td><td></td><td></td></tr>'+
-								'<tr  ><td>Escuela: </td><td><input type="text" placeholder="Ejemplo: ENEA" name="escuela'+(cont+1)+'" size="40"></td><td></td></tr>'+
-								'<tr  ><td>Carrera</td><td><input type="text" placeholder="Educacion Infantil" name="carrera'+(cont+1)+'" size="40"></td><td></td></tr>'+
-								'<tr  ><td>Cedula Profesional</td><td><input type="text" placeholder="6783192" size="40" name="cedula'+(cont+1)+'"></td><td></td></tr>'+
-								'<tr  ><td>Acta de examen: </td><td><input type="text" placeholder="Ejemplo: MAESTRIA 02 0121" name="actaEx'+(cont+1)+'" size="40"></td><td></td></tr>'+
-								'<tr  ><td>Fecha de titulación: </td><td><input type="date" name="fechaTi'+(cont+1)+'"></td><td></td></tr>'+
-								'<tr  ><td>Tema de titulacion: </td><td><input type="text" placeholder="Ejemplo: Programación cognitiva" name="temaTi'+(cont+1)+'" size="45"></td><td></td></tr>'+
-								'<tr  id="'+(cont+1)+'"><td>Agregar</td><td><button onclick="agregarExi(\''+destino+'\',"'+cont+'");return false;">Agregar</button></td><td></td></tr>');
-			$("#nuevos_reg"+id).attr("value",''+(cont+1)+'');
-			cont++;
-			if(cont==3){
-				
-				$("#"+destino+" tr:last").remove();
-				cont=0;
-			}
-			return false;
-		}
-	</script>
-
+    
+	
 	<div style="padding-left:20px;">
 		<h1>Administración del personal ENEA</h1>
         <ul class="nav nav-tabs">
@@ -72,6 +31,7 @@
 					<input type="file" style="display:none" nombre="foto" accept=".jpg, .gif, .png">
 					<input type="hidden" name="nuevos_reg" id="nuevos_reg" value="1">
 					<input type="hidden" name="accion" value="registrar">
+                   
                     <div class="form-group">
                         <label  class="control-label col-xs-2">Apellido Paterno</label>
                         <div class='col-xs-5'>
@@ -223,29 +183,61 @@
 				            </select>
                         </div>
                     </div>
-                     
-					<table>
-					
-						<tr class="datosEsc" style="display:none" >
-                            <td colspan="3" style="padding-top:30px">Datos de Estudios del Personal </td>
-                            <td></td><td></td>
-                        </tr>
-						<tr class="datosEsc" style="display:none" >
-                            <td colspan="3" style="border-bottom:1px solid gray;"></td>
-                            <td></td><td></td>
-                        </tr>						
-						<tr class="datosEsc" style="display:none" ><td>Escuela: </td><td><input type="text" placeholder="Ejemplo: ENEA" name="escuela1" size="40"></td><td></td></tr>
-						<tr class="datosEsc" style="display:none" ><td>Carrera</td><td><input type="text" placeholder="Educacion Infantil" name="carrera1" size="40"></td><td></td></tr>
-						<tr class="datosEsc" style="display:none" ><td>Cedula Profesional</td><td><input type="text" placeholder="6783192" name="cedula1" size="40"></td><td></td></tr>
-						<tr class="datosEsc" style="display:none" ><td>Acta de examen: </td><td><input type="text" placeholder="Ejemplo: MAESTRIA 02 0121" name="actaEx1" size="40"></td><td></td></tr>
-						<tr class="datosEsc" style="display:none" ><td>Fecha de titulación: </td><td><input type="date" name="fechaTi1"></td><td></td></tr>
-						<tr class="datosEsc" style="display:none" ><td>Tema de titulacion: </td><td><input type="text" placeholder="Ejemplo: Programación cognitiva" name="temaTi1" size="45"></td><td></td></tr>
-						<tr class="datosEsc" style="display:none" ><td>Agregar</td><td><button onclick="agregar(\'agregar\',\'\');return false;">Agregar</button></td><td></td></tr>
-						
-					</table>
-						<table id="agregar" class="table">
-
-						</table>
+                    <hr>
+                        <label style="position:relative; left:10%;"> Datos de Estudio</label>
+                        <div class="form-group">
+                            <label class="control-label col-xs-2">Escuela</label>
+                            <div  class='col-xs-3'>
+                                <input type="text" class="form-control" placeholder="Ejemplo: ENEA" name="escuela1" size="40">
+                            </div>
+                        </div>
+                         <div class="form-group">
+                            <label class="control-label col-xs-2">Carrera</label>
+                            <div  class='col-xs-3'>
+                                <input type="text" class="form-control" placeholder="Educacion Infantil" name="carrera1" size="40">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-2">Cedula Profesional</label>
+                            <div  class='col-xs-3'>
+                                <input type="text" class="form-control" placeholder="6783192" name="cedula1" size="40">
+                            </div>
+                        </div>
+                         <div class="form-group">
+                            <label class="control-label col-xs-2">Acta de Examen</label>
+                            <div  class='col-xs-3'>
+                                <input type="text" class="form-control" placeholder="Ejemplo: MAESTRIA 02 0121" name="actaEx1" size="40">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-2">Fecha de Titulacion</label>
+                            <div  class='col-xs-3'>
+                                <input type="date" class="form-control" name="fechaTi1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-2">Tema de Titulacion</label>
+                            <div class='col-xs-3'>
+                                <input type="text" class="form-control" placeholder="Ejemplo: Programación cognitiva" name="temaTi1" >
+                            </div>
+                        </div>
+                    <hr/>
+					<div class="form-group">
+                        <label class="control-label col-xs-2">Actualmente Estudia</label>
+                        <div class="col-xs-2">
+                            <label class="radio-inline">
+                               <input onclick="$(\'.filaBeca\').hide();$(\'#nombreEscuela\').hide();" type="radio" value="0" name="estudio" id="estudioRP1" checked>No
+                            </label>
+                        </div>
+                        <div class="col-xs-2">
+                            <label class="radio-inline">
+                              <input onclick="$(\'.filaBeca\').show();$(\'#nombreEscuela\').show();"type="radio" value="1" name="estudio" id="estudioRP2">Si
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" >Nombre de la Escuela</label>
+                    </div>
 					<table class="table">
 						<tr class="datosEsc" style="display:none" ><td colspan="3" style="border-bottom:1px solid gray;padding-bottom:15px;"></td><td></td><td></td></tr>
 						<tr><td>¿Actualmente estudia? </td>

@@ -3,6 +3,7 @@
     include("Conexion.php");
     class validaLogin extends conexion{
         
+                
          public function __construct(){
             parent::__construct(); 
             
