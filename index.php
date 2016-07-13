@@ -54,7 +54,7 @@ session_start();
 					</script>
 				</head>
 				<body>
-					<center style="width:98%;">
+
                     <div  id="login">
                         <div style="text-align:center;color:white;position:relative;top:-20px;padding:50px;padding-bottom:6px;padding-top:6px;width:100%;background-color:#464646;border-radius:2px 2px 0 0">
                                 Inicio de sesion
@@ -83,6 +83,28 @@ session_start();
                                 Iniciando sesion...
                             </div>
                     </div>
+
+					<center style="position:absolute;top:200px;width:98%;">
+					<form id="login" method="post" action="controller/validar.php" >
+						<div style="text-align:center;color:white;position:relative;top:-20px;left:-50px;padding:50px;padding-bottom:6px;padding-top:6px;width:100%;background-color:#464646;border-radius:2px 2px 0 0">
+							Inicio de sesion
+						</div>
+						<img src="imagenes/inicio.jpg" style="width:60px;position:absolute;top:60px;left:10px">						
+						<table style="width:100%;">
+							<tr>
+								<td style="width:100px;padding-left:30px">Usuario</td>
+								<td><input type="text" placeholder="usuari" name="usuario"></td>
+							</tr>
+							<tr>
+								<td style="width:100px;padding-left:30px">Contraseña</td>
+								<td><input type="password" placeholder="pass" name="pass"></td>
+							</tr>
+						</table>
+						<center><button class="boton">Iniciar sesion</button></center>
+						<div id="resultadoInicio" style="position:absolute;bottom:0;left:0;display:none;background:lightgreen;padding-top:5px;padding-bottom:5px;width:100%">
+							Iniciando sesion...
+						</div>
+					</form>
 					</center>
 				</body>
 			</html>		
