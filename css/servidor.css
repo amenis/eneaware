@@ -158,7 +158,7 @@ body{
     top:52px;
     left:16%;
     background: white;
-    height:100%;
+    height:94%;
     width:84%;
     overflow: auto;
 }
@@ -169,3 +169,15 @@ body{
 .datosEsc{
     display: none;
 }
+.idFoto{
+    position:absolute;
+    top:150px;
+    left:70%;
+    border-radius:5px;
+    cursor:pointer;
+    border:2px solid grey;
+    width:200px;
+    height:200px%;
+    z-index:100;
+}
+
