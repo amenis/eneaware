@@ -3,42 +3,8 @@ var contadorV = 0;
 
 
 $(document).ready(function () {	
-    
-      
-	$("body").on("submit", "form", function () {
-		var destino = "#"+$(this).attr("destino");  
-		var datos = new FormData();
-		inputs = $(this).serialize();
-		entradas = inputs.split("&");
-		for(x=0;x<entradas.length;x++){
-			var temp = entradas[x].split("=");
-			valor= replaceAll(decodeURIComponent(temp[1].toString()), "+", " ");
-			datos.append(temp[0], valor);
-		}		
-		var archivos = $(this).find($("input:file"));
-		archivos.each(function(){  						
-  			datos.append($(this).attr("nombre"),this.files[0]);
-  		});
-  		$.ajax({
-			url:$(this).attr("action"),
-			type:"POST",
-			contentType:false,
-			data:datos,
-			processData:false,
-			cache:false,
-			success: function(data) {
-				if($(destino).attr("class")=="gtk"){
-					$(destino).show("drop",{direction:"down"}, "slow").delay(5000).hide("drop",{direction:"down"}, "slow");
-				}
-				else{
-					$(destino).fadeIn();
-				} 
-    			$(destino).html(data);
-	  		}
-		});
-		//$(destino).fadeIn("fast").html('Ejecutando accion...');					   	 	      
-		return false;
-  });
+   
+	
   $(".gtk").on("click", function () {
   		$(this).stop().hide("drop",{direction:"down"}, "medium");
   });
@@ -80,6 +46,16 @@ $(document).ready(function () {
   		}
   		var carga = $(this).attr("carga");
         $("#principal").load(carga+".php");
+      /*
+        $.ajax({
+            url: carga+".php",
+            dataType: "html",
+            success:function(data){
+               $('#principal').html(data); 
+            }
+        });*/
+      
+      
   		if($(this).attr("class")=="subBoton seleccionado"){
   			$("[submenu="+$(this).parent().attr("id")+"]").addClass("seleccionado");
   		}
@@ -93,12 +69,13 @@ $(document).ready(function () {
   		$(mostrar).fadeIn();
   });
   $("body").on("change", ":file", function () {
-  		var oFReader = new FileReader();
-  		este = $(this);
+      var oFReader = new FileReader();
+  	  este = $(this);
+      alert(este);
       oFReader.readAsDataURL(this.files[0]);
       oFReader.onload = function (oFREvent) {
-      	este.prev().prev().attr("src", oFREvent.target.result);
-      	$("#"+este.attr("otroPrevio")).attr("src", oFREvent.target.result);
+      	este.prev().attr("src", oFREvent.target.result);
+      	
       };
   });
   $("#ayudaG").on("click", function () {
